@@ -1,0 +1,57 @@
+<!-- Comp/Footer.html :: START -->
+<template id="comp-footer">
+  <style>
+    /* ===== Footer (scoped to .site-footer) ===== */
+    .site-footer{
+      background:#0b111f;
+      border-top:1px solid var(--line);
+      color:#E8ECF6;
+      font:15px/1.8 "Noto Sans KR",-apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    .site-footer .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+    .ft-cta{
+      display:flex;gap:18px;align-items:center;justify-content:space-between;
+      padding:22px 0 30px;
+    }
+    .ft-title{font-weight:800;font-size:18px}
+    .ft-sub{color:#9fb0c8}
+
+    .ft-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 14px;border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:#E8ECF6;text-decoration:none;font-weight:700
+    }
+    .btn--gold{
+      border-color:#E7D5A8;
+      background:linear-gradient(180deg,rgba(231,213,168,.18),rgba(231,213,168,.08));
+      color:#0b111f
+    }
+
+    /* 안전장치: 컴포넌트 안의 이미지/SVG가 화면을 터뜨리지 않게 */
+    .site-footer img,.site-footer svg{max-width:100%;height:auto;display:block}
+    .site-footer::before,.site-footer::after{content:none !important}
+
+    @media (max-width:720px){
+      .ft-cta{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+
+  <footer class="site-footer">
+    <div class="wrap ft-cta">
+      <div>
+        <div class="ft-title">맞춤 상담이 필요하세요?</div>
+        <div class="ft-sub">카카오/네이버/이메일 중 편한 채널로 빠르게 연결합니다.</div>
+      </div>
+      <div class="ft-actions">
+        <a class="btn btn--gold" href="#">카카오 상담</a>
+        <a class="btn" href="#">네이버 상담</a>
+        <a class="btn" href="mailto:hello@example.com">이메일 상담</a>
+      </div>
+    </div>
+  </footer>
+</template>
+<!-- Comp/Footer.html :: END -->

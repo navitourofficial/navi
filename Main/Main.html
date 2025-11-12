@@ -1,0 +1,97 @@
+<!-- PATH: /Main/Main.html :: FULL REPLACE -->
+<style>
+  /* ===== 메인 ===== */
+  main{ padding:calc(var(--chip-offset) + 8px) 0 100px }
+
+  .detail-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:center;
+  }
+
+  .detail .figure{
+    margin:0; border-radius:calc(var(--radius) + 2px);
+    overflow:hidden; background:#ddd;
+    box-shadow:var(--shadow); border:1px solid var(--line);
+  }
+  .detail .figure .ph{
+    aspect-ratio:4/3; background:
+      linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.18)),
+      url('Image/Route/feature.jpg') center/cover no-repeat;
+  }
+  .detail h2{ margin:0 0 10px; font:800 32px/1.22 "Playfair Display",serif }
+  .detail p.lead{ margin:0 0 18px; color:#555 }
+  .metrics{ display:flex; gap:28px; margin:18px 0 24px }
+  .metric b{ display:block; font:800 30px/1 "Playfair Display",serif; color:#252525 }
+  .metric small{ color:#8A8A8A }
+  .detail .btn{
+    display:inline-block; padding:10px 16px; border-radius:12px;
+    border:1px solid #E8E0D3; background:var(--panel); color:#3a3a3a; font-weight:700
+  }
+
+  /* ===== 상품 카드: 가로형(2열) ===== */
+  .cards{ margin-top:42px }
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));  /* 3 → 2열 */
+    gap:28px;
+    align-items:stretch;
+  }
+  .card{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--panel);
+    box-shadow:var(--shadow);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 28px 70px rgba(0,0,0,.10);
+    border-color:#e6dece;
+  }
+  .card .thumb::before{
+    content:""; display:block; width:100%;
+    aspect-ratio:16 / 9;                   /* 가로가 길고 세로가 짧은 비율 */
+    background:linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.18)), #cfcfcf;
+  }
+  .card .body{ padding:18px }
+  .meta{ display:flex; gap:12px; color:#8A8A8A; font-size:12.5px }
+  .title{ margin:8px 0 6px; font:700 18px/1.35 "Noto Sans KR",sans-serif }
+  .subtitle{ margin:0 0 12px; color:#5a5a5a; font-size:13.5px }
+  .row{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px }
+  .stars{ letter-spacing:.5px; color:#D6B86E }
+  .price b{ font:800 18px/1 "Playfair Display",serif }
+
+  /* 반응형 */
+  @media (max-width:1180px){
+    .detail-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:740px){
+    .card-grid{grid-template-columns:1fr}  /* 모바일 1열 */
+  }
+</style>
+
+<main class="wrap edge">
+  <section id="detail" class="detail" aria-live="polite">
+    <div class="detail-grid">
+      <figure class="figure">
+        <div id="detail-figure-ph" class="ph" aria-hidden="true"></div>
+      </figure>
+      <div class="copy">
+        <h2 id="detail-title">나비투어의 신조</h2>
+        <p id="detail-lead" class="lead">
+          단순한 관광이 아닌 과거의 시간 속에서 미래의 길을 찾는 여행입니다.<br>
+          사적지와 관광지, 문학과 인물, 그리고 과거와 현재를 한 코스로 묶었습니다. <br>
+          전용 차량, 전문 해설사와 현지 가이드가 최고의 경험을 선물해 줍니다.
+        </p>
+        <div class="metrics">
+        </div>
+        <a class="btn" href="#cards">일정/구성 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="cards" class="cards" aria-label="추천 상품">
+    <!-- JS가 여기 채움 -->
+    <div id="cards-root" class="card-grid" aria-live="polite"></div>
+  </section>
+</main>

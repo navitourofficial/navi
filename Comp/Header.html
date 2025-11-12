@@ -1,0 +1,348 @@
+<!-- PATH: /Comp/Header.html :: FULL REPLACE :: START -->
+<!-- NAVI TOUR – Header (tabs centered to viewport mid w/o transform, logo x2, mega menu width clamped to wrap) -->
+<style id="nt-header-style">
+  :root{
+    --header-h:76px;
+    --head-bg: rgba(0,0,0,.86);
+    --drop-bg-1: rgba(12,16,22,.80);
+    --drop-bg-2: rgba(12,16,22,.74);
+
+    /* ===== [ADD] Hero CTA 유리 버튼용 전역 변수 ===== */
+    --ctaOutline: rgba(255,255,255,.65);
+    --ctaHover:   rgba(255,255,255,.14);
+    --ctaActive:  rgba(255,255,255,.20);
+  }
+  @media (max-width:1024px){ :root{ --header-h:68px } }
+  @media (max-width:560px){  :root{ --header-h:58px } }
+
+  header.site-head{ --head-line: rgba(255,255,255,.14); }
+
+  /* 헤더 프레임 */
+  header.site-head{
+    position:sticky; top:0; z-index:50;
+    border-bottom:1px solid var(--head-line);
+    background:var(--head-bg);
+    color:#fff;
+    backdrop-filter:saturate(120%) blur(6px);
+    -webkit-backdrop-filter:saturate(120%) blur(6px);
+  }
+
+  /* 좌(로고) / 중앙(탭) / 우(고객센터·QnA·문의) */
+  .head-row{
+    position:relative;
+    display:grid; grid-template-columns:auto 1fr auto;
+    align-items:center; gap:20px; height:var(--header-h);
+  }
+
+  /* 로고: 크기만 2배 */
+  .brand{
+    display:flex; align-items:center; justify-content:center;
+    height:var(--header-h); padding:0 12px; margin-right:4px;
+    text-decoration:none; border-radius:12px; transition:background .15s ease;
+  }
+  .brand:hover{ background:rgba(255,255,255,.05) }
+  .brand img{
+    display:block; height:60px; width:auto;   /* 30px → 60px */
+  }
+
+  /* 중앙 탭 묶음: transform 없이 정확히 가운데 */
+  .tabs-center{
+    position:absolute; left:0; right:0; top:0; height:100%;
+    display:flex; align-items:stretch; justify-content:center; gap:0;
+    z-index:2; pointer-events:auto;
+  }
+
+  /* 공통 탭 */
+  .nav-item{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    height:var(--header-h); padding:0 18px;
+    font-weight:700; letter-spacing:.01em; color:#EEE;
+    text-decoration:none; line-height:1;
+    transition:background .15s ease, opacity .15s ease;
+  }
+  .nav-item:hover{ background:rgba(255,255,255,.06) }
+  .nav-item:active{ background:rgba(255,255,255,.12) }
+  .nav-item::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:3px;
+    background:var(--gold, #C9A86A);
+    transform:scaleX(0); transform-origin:left; transition:transform .22s ease;
+  }
+  .nav-item:hover::after,
+  .nav-item:focus-visible::after,
+  .dropdown.open > .nav-item::after{ transform:scaleX(1) }
+
+  /* 드롭다운 공통 */
+  .dropdown{ position:relative; display:flex; align-items:stretch; }
+  .dropdown-menu{
+    position:absolute; top:var(--header-h);
+    border:1px solid var(--head-line);
+    background:linear-gradient(180deg, var(--drop-bg-1), var(--drop-bg-2));
+    backdrop-filter:blur(8px) saturate(120%);
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+    border-radius:0;
+    padding-block:8px; padding-inline:10px;
+    opacity:0; transform:translateY(8px) scale(.98);
+    transition:opacity .2s ease, transform .2s ease;
+    pointer-events:none;
+    width:max-content; max-width:calc(100vw - 40px);
+    white-space:nowrap; z-index:60;
+  }
+  .dropdown:hover > .dropdown-menu,
+  .dropdown:focus-within > .dropdown-menu,
+  .dropdown.open > .dropdown-menu,
+  .dropdown .dropdown-menu:hover{
+    opacity:1; transform:none; pointer-events:auto;
+  }
+
+  .subitem{
+    display:block; padding:10px 12px;
+    color:#EEF1F8; text-decoration:none; white-space:nowrap;
+    font-weight:700; letter-spacing:.01em;
+    text-shadow:0 0 1px rgba(0,0,0,.25);
+    border-radius:0;
+    transition:background .12s ease, color .12s ease;
+  }
+  .subitem:hover{ background:rgba(255,255,255,.08) }
+
+  /* ===== 메가 메뉴(전체): 전폭 고정 → 래퍼 최대폭으로 축소 & 중앙 정렬 ===== */
+  .mega-host{ position:static } /* 부모가 기준 되지 않게 */
+  .dropdown-menu.mega{
+    position:fixed; top:var(--header-h);
+
+    /* 핵심: 좌우를 래퍼 최대폭(기본 --maxw=1180px) 기준으로 클램프 */
+    left: calc(max(20px, (100vw - var(--maxw, 1180px)) / 2));
+    right: calc(max(20px, (100vw - var(--maxw, 1180px)) / 2));
+
+    width:auto; white-space:normal;
+    display:grid; grid-template-columns:repeat(4, minmax(180px, 1fr));
+    gap:16px 22px; padding:18px 20px;
+    z-index:70;
+  }
+
+  .mega-col h4{
+    margin:0 0 8px; font-size:12px; letter-spacing:.08em;
+    color:var(--muted, #A7B2C5); text-transform:uppercase;
+  }
+  .mega-sep{ border:none; height:1px; background:var(--head-line); margin:12px 0 }
+
+  /* 우측 메뉴(고정) */
+  .head-right{ display:flex; gap:0; align-items:stretch; justify-self:end }
+  .head-right .dropdown-menu{ right:0; left:auto }
+
+  /* 반응형 */
+  @media (max-width:900px){
+    .nav-item{ padding:0 14px }
+  }
+  @media (max-width:720px){
+    .tabs-center > .dropdown:nth-child(n+6){ display:none }
+    .head-right > a:nth-child(n+3){ display:none }
+    .dropdown-menu.mega{ grid-template-columns:repeat(2, minmax(160px, 1fr)) }
+  }
+
+  /* =========================================================
+     [ADD] Hero 타이틀/CTA 시인성 패치
+     - 헤더 CSS를 전역으로 쓰므로 여기서 오버라이드
+     - 배너의 기존 규칙을 확실히 덮도록 특이성 + !important 사용
+     ========================================================= */
+
+  /* 텍스트 래퍼에 스팟라이트(라디얼 스크림) */
+  body .hero .text{
+    position:relative !important;
+    transition:opacity .22s ease !important;
+  }
+  body .hero .text::before{
+    content:"";
+    position:absolute; inset:-28px -48px;
+    background:
+      radial-gradient(160% 120% at 50% 50%,
+        rgba(0,0,0,.55) 0%,
+        rgba(0,0,0,.38) 35%,
+        rgba(0,0,0,.22) 60%,
+        transparent 78%);
+    filter: blur(10px);
+    border-radius:28px;
+    z-index:-1;
+  }
+
+  /* 제목 타이포 업그레이드 */
+  body .hero h1{
+    margin:0 0 12px !important;
+    font:900 52px/1.12 "Playfair Display", serif !important;
+    letter-spacing:.2px !important;
+    -webkit-text-stroke:.4px rgba(0,0,0,.18) !important;
+    text-shadow:
+      0 1px 0 rgba(0,0,0,.35),
+      0 4px 18px rgba(0,0,0,.40),
+      0 12px 36px rgba(0,0,0,.35) !important;
+  }
+  @media (max-width:1024px){
+    body .hero h1{ font-size:44px !important; line-height:1.14 !important }
+  }
+  @media (max-width:820px){
+    body .hero h1{ font-size:36px !important }
+  }
+
+  /* 캡션 살짝 강화 */
+  body .hero p{
+    margin:0 0 22px !important;
+    color:#f0f3f7 !important;
+    text-shadow:0 2px 10px rgba(0,0,0,.35) !important;
+  }
+
+  /* CTA: 글래스 고스트 버튼 */
+  body .hero .cta{
+    display:inline-flex; align-items:center; gap:10px; padding:12px 22px !important;
+    border-radius:12px !important;
+    font-weight:800 !important; letter-spacing:.2px !important;
+    background:transparent !important;            /* 기존 골드 그라데 제거 */
+    color:#fff !important;
+    border:1.5px solid var(--ctaOutline) !important;
+    box-shadow:0 6px 18px rgba(0,0,0,.20) !important;
+    backdrop-filter:saturate(120%) blur(2px) !important;
+    transition:background-color .18s ease, border-color .18s ease, transform .06s ease !important;
+  }
+  body .hero .cta:hover{ background:var(--ctaHover) !important; border-color:rgba(255,255,255,.75) !important }
+  body .hero .cta:active{ background:var(--ctaActive) !important; transform:translateY(1px) !important }
+  body .hero .cta:focus-visible{ outline:none !important; box-shadow:0 0 0 2px rgba(255,255,255,.28) !important }
+
+  /* 필요 시 색 강조 버전: .is-accent 붙이면 이전 골드 스타일 사용 가능 */
+  body .hero .cta.is-accent{
+    background:linear-gradient(180deg,var(--cta1,#D7BB83),var(--cta2,#C3A36A)) !important;
+    color:#22170A !important; border:none !important;
+  }
+</style>
+
+<header class="site-head" role="banner">
+  <div class="wrap edge head-row">
+    <!-- 좌측: 로고 -->
+    <a class="brand" href="index.html" aria-label="홈으로 이동">
+      <img src="Image/Logo/my_logo.png" alt="NAVI TOUR 로고">
+    </a>
+
+    <!-- 중앙: '전체~테마기행' 탭 묶음(뷰포트 정중앙 고정) -->
+    <nav class="tabs-center" aria-label="주요 국가·테마 탭">
+      <!-- 전체: 메가 메뉴 -->
+      <div class="dropdown mega-host">
+        <a href="#" class="nav-item">전체</a>
+        <div class="dropdown-menu mega" role="menu" aria-label="전체 메뉴">
+          <div class="mega-col">
+            <h4>중국</h4>
+            <a class="subitem" href="#">서간도</a>
+            <a class="subitem" href="#">북간도</a>
+            <a class="subitem" href="#">임시정부</a>
+          </div>
+          <div class="mega-col">
+            <h4>일본</h4>
+            <a class="subitem" href="#">도쿄</a>
+            <a class="subitem" href="#">교토</a>
+            <a class="subitem" href="#">오사카</a>
+            <a class="subitem" href="#">후쿠오카</a>
+          </div>
+          <div class="mega-col">
+            <h4>미국 · 러시아</h4>
+            <a class="subitem" href="#">하와이</a>
+            <a class="subitem" href="#">연해주</a>
+            <a class="subitem" href="#">사할린</a>
+          </div>
+          <div class="mega-col">
+            <h4>테마기행</h4>
+            <a class="subitem" href="#">인물기행</a>
+            <a class="subitem" href="#">테마기행</a>
+            <a class="subitem" href="#">청소년 비전트립</a>
+            <hr class="mega-sep">
+            <h4>고객지원</h4>
+            <a class="subitem" href="#">고객센터</a>
+            <a class="subitem" href="#">QnA</a>
+            <a class="subitem" href="#">문의하기</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 중국 -->
+      <div class="dropdown">
+        <a href="#" class="nav-item">중국</a>
+        <div class="dropdown-menu" role="menu" aria-label="중국">
+          <a class="subitem" href="#">서간도의 길</a>
+          <a class="subitem" href="#">북간도의 길</a>
+          <a class="subitem" href="#">임시정부의 발자취</a>
+        </div>
+      </div>
+
+      <!-- 일본 -->
+      <div class="dropdown">
+        <a href="#" class="nav-item">일본</a>
+        <div class="dropdown-menu" role="menu" aria-label="일본">
+        <a class="subitem" href="#">도쿄</a>
+          <a class="subitem" href="#">교토</a>
+          <a class="subitem" href="#">오사카</a>
+          <a class="subitem" href="#">후쿠오카</a>
+        </div>
+      </div>
+
+      <!-- 미국 -->
+      <div class="dropdown">
+        <a href="#" class="nav-item">미국</a>
+        <div class="dropdown-menu" role="menu" aria-label="미국">
+          <a class="subitem" href="#">하와이</a>
+        </div>
+      </div>
+
+      <!-- 러시아 -->
+      <div class="dropdown">
+        <a href="#" class="nav-item">러시아</a>
+        <div class="dropdown-menu" role="menu" aria-label="러시아">
+          <a class="subitem" href="#">연해주</a>
+          <a class="subitem" href="#">사할린</a>
+        </div>
+      </div>
+
+      <!-- 테마기행 -->
+      <div class="dropdown">
+        <a href="#" class="nav-item">테마기행</a>
+        <div class="dropdown-menu" role="menu" aria-label="테마기행">
+          <a class="subitem" href="#">인물기행</a>
+          <a class="subitem" href="#">테마기행</a>
+          <a class="subitem" href="#">청소년 비전트립</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 우측: 고객센터 · QnA · 문의하기 (고정) -->
+    <nav class="head-right" aria-label="상단 오른쪽 내비게이션">
+      <a href="#" class="nav-item">고객센터</a>
+      <a href="#" class="nav-item">QnA</a>
+      <a href="#" class="nav-item">문의하기</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  /* 클릭(터치)로 열림 + 외부 클릭/ESC 닫힘 */
+  (function(){
+    const head = document.currentScript.previousElementSibling; // header
+    const drops = head.querySelectorAll('.dropdown');
+
+    drops.forEach(d => {
+      const trigger = d.querySelector('.nav-item');
+      if(!trigger) return;
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const wantOpen = !d.classList.contains('open');
+        drops.forEach(x => x.classList.remove('open'));
+        if(wantOpen) d.classList.add('open');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if(!head.contains(e.target)) drops.forEach(d => d.classList.remove('open'));
+    });
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') drops.forEach(d => d.classList.remove('open'));
+    });
+
+    let t=null;
+    window.addEventListener('resize', ()=>{ clearTimeout(t); t=setTimeout(()=>drops.forEach(d=>d.classList.remove('open')), 120); });
+  })();
+</script>
+<!-- PATH: /Layout/Header.html :: FULL REPLACE :: END -->
