@@ -1,191 +1,184 @@
-<!-- PATH: /ui/ProductRow_NaviTour_Fetch.html :: FULL REPLACE -->
+<!-- PATH: /Prod/Prod_List_Box.html :: FULL REPLACE -->
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NAVI TOUR – Product Row</title>
+  <meta charset="utf-8"/>
+  <title>NAVI TOUR – Product Row Box</title>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- 이 파일은 '상품 리스트 행 + 드롭다운 박스' 전용 템플릿 -->
+  <style>
+    /* ===== 상품 리스트 메인 행 ===== */
+    .prod-title{
+      font-weight:700;
+    }
+    .prod-summary{
+      margin-top:4px;
+      font-size:.84rem;
+      color:#777;
+      font-weight:400;
+      white-space:normal;   /* 자동 줄바꿈 */
+      line-height:1.5;
+    }
 
-<style>
-  :root{
-    --bg:#0A0F16; --panel:#0E1521; --ink:#E8ECF6; --muted:#A7B2C5; --gold:#C2A15A;
-    --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.08); --shadow:0 20px 60px rgba(0,0,0,.45);
-    --radius:18px; --maxw:1180px; --gap:22px; --thumb-ratio: 4/3;
-  }
-  *{box-sizing:border-box} html,body{height:100%}
-  body{
-    margin:0; padding:28px 16px 80px; background:var(--bg); color:var(--ink);
-    font:15px/1.6 "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  }
-  .wrap{max-width:var(--maxw); margin:0 auto}
+    .prod-term,
+    .prod-price,
+    .prod-theme{
+      font-size:.93rem;
+      white-space:nowrap;   /* 기간/가격/테마 한 줄 유지 */
+    }
 
-  /* 리스트 */
-  .list{display:grid; gap:var(--gap)}
+    .prod-price{
+      color:#222;           /* 가격은 검은색 */
+      font-weight:600;
+    }
 
-  /* ROW 카드 */
-  .row{
-    display:grid; gap:18px; grid-template-columns: 320px 1fr 240px; align-items:stretch;
-    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-    box-shadow:var(--shadow); padding:16px; overflow:hidden;
-  }
-  .thumb{position:relative; border:none; margin:-16px 0 -16px -16px; border-radius:14px; overflow:hidden}
-  .thumb img{width:100%; height:100%; object-fit:cover; display:block; aspect-ratio:var(--thumb-ratio); transform:scale(1); transition:transform .4s ease}
-  .row:hover .thumb img{transform:scale(1.03)}
+    .prod-theme{
+      color:#444;
+      font-weight:500;
+    }
 
-  .main{display:flex; flex-direction:column; gap:10px; min-width:0}
-  .labels{display:flex; gap:8px; flex-wrap:wrap}
-  .label{font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); color:var(--ink); background:rgba(255,255,255,.04)}
-  .title{font:700 22px/1.28 "Playfair Display", serif; margin:2px 0 2px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .desc{color:var(--muted); font-size:14px; line-height:1.55; margin:0 0 2px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-  .meta{display:flex; gap:16px; flex-wrap:wrap}
-  .meta-item{display:inline-flex; align-items:center; gap:8px; font-size:14px}
-  .meta-item.muted{color:var(--muted)}
-  .meta svg{width:16px; height:16px; opacity:.9}
-  .tags{display:flex; gap:8px; flex-wrap:wrap}
-  .tag{font-size:12px; color:var(--muted); background:rgba(255,255,255,.02); border:1px solid var(--line); padding:6px 10px; border-radius:8px}
+    /* ===== "상세 보기" 토글 버튼 – 회색 버튼 ===== */
+    .pd-detail-toggle{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 16px;
+      border-radius:999px;
+      border:1px solid #d2d2d2;
+      background:#f3f3f3;
+      color:#444;
+      font-size:.9rem;
+      font-weight:500;
+      cursor:pointer;
+      white-space:nowrap;
+      text-decoration:none;          /* 밑줄 제거 */
+      transition:
+        background .15s ease,
+        border-color .15s ease,
+        transform .06s ease;
+    }
+    .pd-detail-toggle:hover{
+      background:#e7e7e7;
+      border-color:#c5c5c5;
+    }
+    .pd-detail-toggle:active{
+      transform:translateY(1px);
+      background:#dedede;
+    }
+    .pd-detail-toggle:focus-visible{
+      outline:2px solid rgba(0,0,0,.25);
+      outline-offset:2px;
+    }
 
-  .side{
-    padding-left:18px; border-left:1px solid var(--line-2);
-    display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end
-  }
-  .price{font-size:28px; font-weight:800; letter-spacing:.2px; text-align:right; margin-bottom:10px}
-  .price small{font-size:16px; font-weight:600; color:var(--muted); margin-left:4px}
-  .cta{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:12px 16px; border-radius:12px; border:1px solid var(--gold);
-    color:var(--ink); background:transparent; text-decoration:none; font-weight:700;
-    transition:transform .2s ease, background .2s ease
-  }
-  .cta:hover{background:rgba(194,161,90,.12); transform:translateY(-1px)}
-  .cta svg{width:18px; height:18px}
+    /* ===== 상세 드롭다운 행 기본 숨김 ===== */
+    .prod-row-detail{
+      display:none;
+    }
 
-  @media (max-width:1024px){ .row{grid-template-columns: 260px 1fr 200px} .price{font-size:24px} }
-  @media (max-width:820px){
-    .row{grid-template-columns:1fr; gap:12px}
-    .side{border-left:none; border-top:1px solid var(--line-2); padding-left:0; padding-top:12px; align-items:flex-start}
-    .price{text-align:left}
-  }
-</style>
+    /* ===== 상세 드롭다운 박스 ===== */
+    .prod-row-detail .prod-detail-box{
+      margin:8px 0 4px;
+      padding:18px 22px 14px;
+      background:#fbfaf6;
+      border:1px solid rgba(0,0,0,.05);
+      border-radius:14px;
+      box-shadow:0 10px 25px rgba(0,0,0,.04);
+      font-size:.9rem;
+      color:#555;
+    }
+
+    .prod-detail-box p{
+      margin:0 0 8px;
+    }
+
+    /* 빨간 점선 영역: 장문 설명 */
+    .prod-desc{
+      line-height:1.8;
+      color:#555;
+    }
+
+    /* 노란 점선 영역: 출발 인원 / 코스 */
+    .prod-meta{
+      margin-top:10px;
+      padding-top:8px;
+      border-top:1px dashed rgba(0,0,0,.08);
+      color:#777;
+      line-height:1.6;
+    }
+
+    /* 보라 점선 영역: 로케이션 */
+    .prod-location{
+      margin-top:4px;
+      color:#777;
+      line-height:1.6;
+    }
+
+    /* 파란 점선 영역: 상세 페이지 열기 버튼 라인 */
+    .prod-detail-footer{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px dashed rgba(0,0,0,.08);
+      text-align:right;
+    }
+    .prod-detail-link{
+      display:inline-block;
+      padding:6px 16px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.18);
+      font-size:.86rem;
+      color:#333;
+      text-decoration:none;
+      background:#ffffff;
+      box-shadow:0 4px 12px rgba(0,0,0,.04);
+    }
+    .prod-detail-link:hover{
+      background:#f6f6f6;
+    }
+    .prod-detail-link:active{
+      transform:translateY(1px);
+      box-shadow:0 2px 6px rgba(0,0,0,.04);
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="list" id="list"></section>
-  </div>
 
-<script>
-/* ====== 설정값 ====== */
-const SHEET_ID   = '17Z5OB9O4YkZKPt8MHqStg5Lza-YbJs62lFxSx6yHPUY';  // 공개 스프레드시트 ID
-const SHEET_NAME = '중국';
+  <!-- 메인 행 템플릿 -->
+  <template id="prod-row-main">
+    <tr class="prod-row">
+      <td data-label="상품명">
+        <b class="prod-title"></b>
+        <div class="prod-summary"></div>
+      </td>
+      <td data-label="기간">
+        <span class="prod-term"></span>
+      </td>
+      <td data-label="가격대">
+        <span class="prod-price"></span>
+      </td>
+      <td data-label="테마">
+        <span class="prod-theme"></span>
+      </td>
+      <td data-label="상세 보기">
+        <button type="button" class="pd-detail-toggle">상세 보기</button>
+      </td>
+    </tr>
+  </template>
 
-/* gviz: E,F,G,I,J,K,L,M,N,O,P,Q,X,Y. X='OPEN', Y asc, 4행부터(offset 3) */
-const GVIZ_BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`;
-const QUERY     = `select E,F,G,I,J,K,L,M,N,O,P,Q,X,Y where X='OPEN' order by Y asc offset 3`;
-const URL       = `${GVIZ_BASE}?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&tq=${encodeURIComponent(QUERY)}`;
+  <!-- 상세 드롭다운 행 템플릿 -->
+  <template id="prod-row-detail">
+    <tr class="prod-row-detail">
+      <td colspan="5">
+        <div class="prod-detail-box">
+          <p class="prod-desc"></p>
+          <p class="prod-meta"></p>
+          <p class="prod-location"></p>
+          <div class="prod-detail-footer">
+            <a class="prod-detail-link" href="#">상품 상세 페이지 열기</a>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </template>
 
-/* 유틸 */
-const nf = new Intl.NumberFormat('ko-KR');
-const $  = (sel, base=document)=>base.querySelector(sel);
-function parseGViz(jsonText){
-  const start = jsonText.indexOf('{'); const end = jsonText.lastIndexOf('}');
-  return JSON.parse(jsonText.slice(start, end+1));
-}
-function val(cell){ return cell ? (cell.f ?? cell.v ?? '') : '' }
-const norm = s => String(s ?? '').replace(/\s+/g, ' ').trim();
-function tagsToArray(raw){
-  if(!raw) return []; return String(raw).split(/[|,、\/]/).map(s=>norm(s)).filter(Boolean);
-}
-
-/* 카드 템플릿 */
-function renderRow(item){
-  const {regions, title, summary, nights, days, price, location, routeStart, routeFinish, tags} = item;
-  const article = document.createElement('article');
-  article.className = 'row';
-  article.dataset.region = regions;
-
-  article.innerHTML = `
-    <figure class="thumb">
-      <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop" alt="">
-    </figure>
-
-    <div class="main">
-      <div class="labels">
-        <span class="label">패키지</span>
-        <span class="label">${routeStart ? routeStart + ' 출발' : '출발 확인'}</span>
-      </div>
-
-      <h3 class="title">${title || ''}</h3>
-      <p class="desc">${summary || ''}</p>
-
-      <div class="meta">
-        <span class="meta-item">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
-          ${location || (routeStart && routeFinish ? `${routeStart} · ${routeFinish}` : '')}
-        </span>
-        <span class="meta-item muted">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 3v4M8 3v4M3 10h18" stroke="currentColor" stroke-width="1.5"/></svg>
-          여행기간 ${nights || 0}박 ${days || 0}일
-        </span>
-      </div>
-
-      <div class="tags">
-        ${tags.map(t=>`<span class="tag">#${t}</span>`).join('')}
-      </div>
-    </div>
-
-    <aside class="side">
-      <div class="price"><strong>${price ? nf.format(price) : '-'}</strong><small>원~</small></div>
-      <a href="#" class="cta">판매상품보기
-        <svg viewBox="0 0 24 24" fill="none"><path d="M8 5l8 7-8 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </aside>
-  `;
-  return article;
-}
-
-/* 데이터 로드 + 렌더 */
-(async function load(){
-  try{
-    const res = await fetch(URL, {cache:'no-store'});
-    const txt = await res.text();
-    const json = parseGViz(txt);
-    const rows = json.table.rows || [];
-
-    // 0:E region, 1:F title, 2:G summary, 3:I nights, 4:J days, 5:K price,
-    // 6:L minPax, 7:M themes, 8:N tag, 9:O routeStart, 10:P routeFinish, 11:Q location,
-    // 12:X open, 13:Y priority
-    let arr = rows.map(r=>{
-      const c = r.c;
-      return {
-        regions:     norm(val(c[0])),
-        title:       norm(val(c[1])),
-        summary:     norm(val(c[2])),
-        nights:      Number(val(c[3]) || 0),
-        days:        Number(val(c[4]) || 0),
-        price:       Number(String(val(c[5])).replace(/[^\d.-]/g,'') || 0),
-        minPax:      Number(val(c[6]) || 0),
-        themes:      norm(val(c[7])),
-        tags:        tagsToArray(val(c[8])),
-        routeStart:  norm(val(c[9])),
-        routeFinish: norm(val(c[10])),
-        location:    norm(val(c[11])),
-        open:        norm(val(c[12])).toUpperCase(),
-        priority:    Number(val(c[13]) || 9999),
-      };
-    })
-    .filter(d => d.open === 'OPEN' && d.title) // OPEN만, 제목 없는 행 제외
-    .sort((a,b)=> a.priority - b.priority || a.title.localeCompare(b.title,'ko'));
-
-    const list = $('#list');
-    list.innerHTML = '';
-    arr.forEach(d => list.appendChild(renderRow(d)));
-  }catch(err){
-    console.error(err);
-    $('#list').innerHTML = `<div style="color:var(--muted)">데이터 로드 실패. 스프레드시트 공개 범위와 SHEET_ID를 확인.</div>`;
-  }
-})();
-</script>
 </body>
 </html>
