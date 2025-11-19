@@ -1,0 +1,270 @@
+/* PATH: /Main/Main_about.css :: FULL FILE
+   ============================================================
+   NAVI TOUR – 메인 페이지 ABOUT 영역 전용 스타일
+
+   [목차]
+   1. ABOUT 루트 & 섹션 기본
+      1-1. 전체 래퍼(.nt-about-root)
+      1-2. 섹션 공통 여백(.nt-section)
+      1-3. 패널 카드 공통(.nt-panel)
+
+   2. 브랜드 인트로 섹션
+      2-1. 2단 레이아웃 그리드(.nt-brand-intro-inner)
+      2-2. 섹션 타이틀/리드/본문 타이포(.nt-section-*)
+      2-3. 브랜드 키워드 pill 카드(.nt-brand-pill-group / .nt-brand-pill)
+
+   3. 브랜드 원칙 섹션
+      3-1. 원칙 영역 레이아웃(.nt-principles-inner)
+      3-2. 원칙 카드 그리드(.nt-principles-grid)
+      3-3. 개별 원칙 카드 스타일(.nt-principle-*)
+
+   4. 대상/효용 섹션
+      4-1. 섹션 레이아웃(.nt-audience-inner / .nt-audience-intro)
+      4-2. 태그 배지 리스트(.nt-tag-list / .nt-tag)
+   ============================================================
+*/
+
+/* ============================================================
+   1. ABOUT 루트 & 섹션 기본
+   ============================================================ */
+
+/* 1-1. ABOUT 루트 래퍼(.nt-about-root)
+   - cards-root(=card-grid) 안에서 ABOUT 블록이 전체 폭을 차지하게 함
+   - 위쪽 여백을 조금 당겨서 히어로와 간격을 줄임 */
+.nt-about-root{
+  grid-column:1 / -1;          /* 카드 그리드 전체 열 사용 */
+  display:flex;
+  flex-direction:column;
+  gap:32px;                    /* 패널들 사이 수직 간격 */
+  padding:16px 0 32px;         /* 위 16 / 아래 32 – 카드 전체 상하 여백 */
+  margin-top:-60px;            /* 히어로와 카드 사이 간격 당겨서 더 밀착 */
+}
+
+/* 1-2. 섹션 공통 래퍼 – 기본 패딩 제거
+   - ABOUT 영역 안의 섹션들이 추가 여백 없이 패널에 딱 맞게 붙도록 */
+.nt-section{
+  padding:0;
+}
+
+/* 1-3. 패널 카드 공통(.nt-panel)
+   - ABOUT의 각 블록(브랜드 소개, 원칙, 대상 등)을 하나의 큰 카드처럼 보이게 */
+.nt-panel{
+  background:var(--panel);                   /* 메인 아이보리 배경 위의 흰 패널 */
+  border-radius:calc(var(--radius) + 4px);   /* 메인 카드보다 살짝 더 둥글게 */
+  box-shadow:0 22px 60px rgba(0,0,0,.06);    /* 부드러운 하단 그림자 */
+  border:1px solid var(--line);              /* 연한 외곽선 */
+  padding:28px 32px 30px;                    /* 내부 여백 (상/좌우/하) */
+}
+
+/* 반응형: 태블릿 이하에서 패딩/라운드 축소 */
+@media (max-width:960px){
+  .nt-panel{
+    padding:22px 22px 24px;                  /* 화면 좁을 때 패딩 축소 */
+    border-radius:var(--radius);            /* 기본 카드 라운드와 동일하게 */
+  }
+}
+
+/* ============================================================
+   2. 브랜드 인트로 섹션
+   ============================================================ */
+
+/* 2-1. 브랜드 인트로 레이아웃(.nt-brand-intro-inner)
+   - 왼쪽: 텍스트(브랜드 소개 문단)
+   - 오른쪽: 브랜드 pill 카드 묶음
+   - 1.4 : 1 비율의 2단 그리드 */
+.nt-brand-intro-inner{
+  display:grid;
+  grid-template-columns:minmax(0, 1.4fr) minmax(0, 1fr); /* 좌측 넓게, 우측 좁게 */
+  gap:32px;                                              /* 좌우 컬럼 간격 */
+  align-items:flex-start;                                /* 위쪽 정렬 */
+}
+
+/* 모바일/태블릿: 한 컬럼으로 쌓기 */
+@media (max-width:960px){
+  .nt-brand-intro-inner{
+    grid-template-columns:1fr;   /* 단일 컬럼 */
+    gap:24px;                    /* 세로 간격 약간 축소 */
+  }
+}
+
+/* 2-2. 섹션 타이포그래피 공통
+   - kicker / title / lead / body 역할 분리 */
+
+/* 섹션 상단 작은 라벨 (예: "ABOUT" 같은 역할) */
+.nt-section-kicker{
+  font-size:13px;
+  letter-spacing:.18em;   /* 자간 넓게 → 라벨 느낌 */
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+
+/* 메인 타이틀 (브랜드 소개 큰 제목) */
+.nt-section-title{
+  margin:0 0 18px;
+  font:800 30px/1.4 "Playfair Display",serif;  /* 영문 서체 느낌의 타이틀 */
+  letter-spacing:.02em;
+}
+
+/* 리드 문단 – 제목 바로 아래 강조 문장 */
+.nt-section-lead{
+  margin:0 0 18px;
+  font-weight:500;
+  color:var(--ink);        /* 본문보다 조금 진한 색 */
+}
+
+/* 일반 설명 본문 */
+.nt-section-body{
+  margin:0;
+  color:var(--muted);      /* 살짝 옅은 회색 톤 */
+  font-size:14px;
+}
+
+/* 2-3. 브랜드 pill 카드 블록
+   - 우측에 붙는 작은 카드 여러 개(브랜드 핵심 문장들) */
+
+/* pill 카드 묶음 – 수직 스택 */
+.nt-brand-pill-group{
+  display:flex;
+  flex-direction:column;
+  gap:12px;                 /* pill 간 수직 간격 */
+}
+
+/* 개별 pill 카드 */
+.nt-brand-pill{
+  background:#fbfbfb;                               /* 메인 패널보다 살짝 톤 다운 */
+  border-radius:calc(var(--radius) - 4px);          /* 전체 카드보다 조금 덜 둥글게 */
+  padding:14px 16px;
+  border:1px solid var(--line-2);                   /* 더 연한 보더 */
+  box-shadow:none;                                  /* 그림자 없이 평평한 느낌 */
+}
+
+/* pill 제목 */
+.nt-brand-pill h3{
+  margin:0 0 4px;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.03em;      /* 약간 자간 줘서 라벨 느낌 */
+}
+
+/* pill 본문 */
+.nt-brand-pill p{
+  margin:0;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* ============================================================
+   3. 브랜드 원칙 섹션
+   ============================================================ */
+
+/* 3-1. 원칙 섹션 전체 래퍼
+   - 제목 + 설명 + 카드 그리드까지 세로로 쌓는 용도 */
+.nt-principles-inner{
+  display:flex;
+  flex-direction:column;
+  gap:20px;                    /* 섹션 설명과 카드 그리드 사이 간격 */
+}
+
+/* 3-2. 원칙 카드 그리드(.nt-principles-grid)
+   - 기본 3열, 화면 크기에 따라 2열 → 1열로 축소 */
+.nt-principles-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));  /* 3등분 그리드 */
+  gap:18px;                                      /* 카드간 공간 */
+}
+
+/* 태블릿: 2열 */
+@media (max-width:960px){
+  .nt-principles-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+/* 모바일: 1열 */
+@media (max-width:640px){
+  .nt-principles-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* 3-3. 개별 원칙 카드(.nt-principle-card)
+   - 연한 배경, 기본 카드보다 조금 작은 느낌 */
+.nt-principle-card{
+  background:#fbf9f9;              /* 살짝 붉은기 있는 아이보리 */
+  border-radius:var(--radius);
+  box-shadow:none;
+  padding:16px 16px 14px;
+  border:1px solid var(--line-2);
+}
+
+/* 원칙 카드 상단 작은 라벨 (번호/분류 등) */
+.nt-principle-label{
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+
+/* 원칙 제목 */
+.nt-principle-title{
+  margin:0 0 6px;
+  font-size:15px;
+  font-weight:700;
+}
+
+/* 원칙 설명 본문 */
+.nt-principle-text{
+  margin:0;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* ============================================================
+   4. 대상/효용 섹션
+   ============================================================ */
+
+/* 4-1. 대상/효용 섹션 래퍼
+   - 소개 문단 + 태그 리스트 전체를 세로로 쌓는 레이아웃 */
+.nt-audience-inner{
+  display:flex;
+  flex-direction:column;
+  gap:18px;                 /* 소개 문단과 태그 리스트 사이 간격 */
+}
+
+/* 소개 문단의 최대 폭 제한
+   - 너무 길게 늘어나지 않게 해서 가독성 유지 */
+.nt-audience-intro{
+  max-width:520px;
+}
+
+/* 4-2. 태그 리스트(.nt-tag-list / .nt-tag)
+   - 어떤 사람에게 효과적인지, 어떤 상황에 맞는지 등을 한 줄 태그로 표현 */
+
+/* 태그들을 여러 줄로 감싸는 컨테이너 */
+.nt-tag-list{
+  display:flex;
+  flex-wrap:wrap;          /* 줄바꿈 허용 */
+  gap:10px;                /* 태그들 사이 간격 */
+}
+
+/* 개별 태그 pill */
+.nt-tag{
+  display:inline-flex;
+  align-items:center;
+  padding:7px 12px;
+  font-size:12px;
+  border-radius:999px;                       /* 완전 동그란 pill */
+  background:rgba(0,0,0,.03);               /* 아주 옅은 회색 배경 */
+  border:1px solid var(--line);
+  color:var(--ink);
+  white-space:nowrap;                        /* 기본은 한 줄 유지 */
+}
+
+/* 모바일: 태그 텍스트가 두 줄까지 허용되도록 줄바꿈 허용 */
+@media (max-width:640px){
+  .nt-tag{
+    white-space:normal;
+  }
+}

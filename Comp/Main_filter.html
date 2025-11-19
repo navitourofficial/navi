@@ -1,0 +1,68 @@
+<!-- Comp/Main_filter.html :: JS 수정 없이 중앙 정렬 + 위쪽 여백 제거 버전 -->
+<style>
+  /* 필터를 배너 하단 쪽으로 끌어올리는 양(음수). 화면 넓이에 따라 부드럽게 조절 */
+  :root{ --filter-pull: clamp(-28px, -2.2vw, -16px); }
+
+  /* 래퍼: 가로/세로 중앙정렬, 위아래 여백 제거, 위로 살짝 겹치기 */
+  .site-filter-wrap{
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    margin: var(--filter-pull) 0 0 0;                /* 위쪽 여백 제거 + 위로 끌어올림 */
+    padding: 0;                                      /* 내부 패딩 제거 */
+    z-index: 5;                                      /* 카드 위에 */
+  }
+
+  /* 필터 줄 자체는 투명, 가운데 정렬 */
+  .site-filter{
+    display: flex; align-items: center; justify-content: center;
+    gap: 34px;                                       /* 버튼 간격 */
+    margin: 0; padding: 0; border: 0; background: transparent;
+    user-select: none;
+  }
+
+  /* 칩 버튼: 넓은 히트영역(보이지 않는 패딩 포함), 배경 투명 */
+  .site-filter .chip{
+    position: relative;
+    appearance: none; border: 0; background: transparent; color: #E8ECF6;
+    font: 700 17px/1 "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    padding: 10px 4px; cursor: pointer; white-space: nowrap;
+  }
+  /* 보이지 않는 히트 확장 */
+  .site-filter .chip::before{
+    content:""; position:absolute; inset:-12px -14px;   /* 위아래좌우 여유 히트영역 */
+  }
+
+  /* 활성 상태 표시: 금빛 언더라인만 */
+  .site-filter .chip[data-active="true"],
+  .site-filter .chip[aria-selected="true"]{
+    color:#F2F4F8;
+  }
+  .site-filter .chip[data-active="true"]::after,
+  .site-filter .chip[aria-selected="true"]::after{
+    content:""; position:absolute; left:-8px; right:-8px; bottom:-8px; height:2px;
+    background: linear-gradient(90deg, transparent, #E7D5A8 18%, #EAD79D 50%, #E7D5A8 82%, transparent);
+  }
+
+  /* 아래쪽(카드 섹션)과의 여백도 최소화: 필터 다음에 바로 figures가 오면 상단 패딩 제거 */
+  .site-filter-wrap + section.figures{
+    padding-top: 8px !important;
+  }
+
+  @media (max-width: 860px){
+    .site-filter{ gap: 22px; }
+    .site-filter .chip{ font-size: 15px; }
+    :root{ --filter-pull: clamp(-22px, -3.2vw, -14px); }
+  }
+</style>
+
+<div class="site-filter-wrap" role="region" aria-label="카테고리 필터">
+  <nav class="site-filter" role="tablist" aria-label="분류 필터">
+    <button class="chip" data-filter="all"      data-active="true"  role="tab" aria-selected="true">전체</button>
+    <button class="chip" data-filter="서간도"   role="tab" aria-selected="false">서간도의 길</button>
+    <button class="chip" data-filter="북간도"   role="tab" aria-selected="false">북간도의 길</button>
+    <button class="chip" data-filter="임시정부" role="tab" aria-selected="false">임시정부의 발자취</button>
+    <button class="chip" data-filter="일본"     role="tab" aria-selected="false">일본 독립운동</button>
+    <button class="chip" data-filter="하와이"   role="tab" aria-selected="false">하와이 독립운동</button>
+    <button class="chip" data-filter="연해주"   role="tab" aria-selected="false">극동 연해주</button>
+  </nav>
+</div>
