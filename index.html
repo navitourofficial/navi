@@ -2,161 +2,174 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <!-- 히어로 칩(배너) + 메인 카드 렌더러 -->
-  <script src="Js/HeroChips.js" defer></script>
-  <script src="Js/MainCards.js" defer></script> <!-- ★ 추가: 카테고리별 카드 렌더 -->
-
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>NAVI TOUR – Landing</title>
+  <meta name="description" content="역사와 독립운동의 길을 따라가는 프리미엄 테마 여행, NAVI TOUR 랜딩 페이지"/>
+
+  <!-- 히어로 칩(배너) + 시트 로더 + 메인 카드 렌더러 -->
+  <script src="Js/HeroChips.js" defer></script>
+  <script src="Js/ProductSheetLoader.js" defer></script>
+  <script src="Main/Main_Cards.js" defer></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    /* ===== 디자인 토큰: 아이보리/화이트/골드 ===== */
-    :root{
-      --bg:#F6F3EE;
-      --panel:#FFFFFF;
-      --ink:#2B2B2B;
-      --muted:#7A7A7A;
-      --gold:#C9A86A;
-      --line:#EAE3D8;
-      --line-2:#F1EAE0;
-      --shadow:0 20px 60px rgba(0,0,0,.08);
-      --radius:18px;
-      --maxw:1180px;
-
-      /* 레이아웃 크기(Desktop: 권장 조합 E) */
-      /* --header-h 는 헤더 파일에서 정의 */
-      --hero-h:41vh;           /* 히어로 40~42vh (배너 파일에서도 사용) */
-      --chip-h:44px;           /* 칩 높이 (배너 파일에서도 사용) */
-      --chip-offset:54px;      /* 칩바 오버랩 높이 → main 상단 패딩 계산에 필요 */
-      --rail-pad:10px;         /* 칩 레일 패딩 (배너 파일에서도 사용) */
-      --card-ratio:1.141;      /* 썸네일 1:1.141 */
-
-      /* 전 구역 좌우 “시작/끝선” 공통 여백 */
-      --edge-eq:24px;          /* 이 값만 바꾸면 모든 섹션이 같이 이동 */
-    }
-
-    /* 태블릿 */
-    @media (max-width:1024px){
-      :root{
-        --hero-h:37vh;
-        --chip-h:42px;
-        --chip-offset:50px;
-        --edge-eq:20px;
-      }
-    }
-    /* 모바일 */
-    @media (max-width:560px){
-      :root{
-        --hero-h:35vh;
-        --chip-h:40px;
-        --chip-offset:46px;
-        --edge-eq:14px;
-      }
-    }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:var(--bg); color:var(--ink);
-      font:15px/1.65 "Noto Sans KR",system-ui,Segoe UI,Roboto,Arial,sans-serif;
-    }
-    a{color:inherit;text-decoration:none}
-    img{display:block;max-width:100%}
-
-    /* 페이지 컨테이너: 중앙선 기준 */
-    .wrap{
-      max-width:var(--maxw);
-      margin-left:auto; margin-right:auto;
-      padding-left:22px; padding-right:22px;   /* 기본 내부 패딩 */
-    }
-    /* 공통 좌우 가이드: 모든 섹션을 같은 시작/끝선으로 맞춤 */
-    .wrap.edge{
-      padding-left:calc(22px + var(--edge-eq));
-      padding-right:calc(22px + var(--edge-eq));
-    }
-  </style>
 </head>
 
 <body>
   <!-- ===== HEADER (외부 파일 주입) ===== -->
   <div id="site-header" data-src="Comp/Header.html"></div>
-  <script>
-    (function(){
-      const el = document.getElementById('site-header');
-      const src = el.getAttribute('data-src') || 'Comp/Header.html';
-      fetch(src, {cache:'no-store'})
-        .then(r => r.text())
-        .then(html => { el.outerHTML = html; })
-        .catch(err => console.error('Header load failed:', err));
-    })();
-  </script>
 
   <!-- ===== BANNER (히어로 + 필터 외부 파일 주입) ===== -->
-  <div id="site-banner" data-src="Comp/Banner.html"></div>
+  <div id="site-banner" data-src="Main/Main_Banner.html"></div>
+
+  <!-- ===== MAIN (외부 파일 주입) ===== -->
+  <div id="site-main" data-src="Main/Main.html"></div>
+
+  <!-- ===== 본문 하단 문의 CTA (Comp/Receipt.html 주입) ===== -->
+  <div id="site-receipt" data-src="Comp/Receipt.html"></div>
+
+  <!-- ===== FOOTER (외부 파일 주입 – Comp/Footer.html) ===== -->
+  <div id="site-footer" data-src="Comp/Footer.html"></div>
+
+  <!-- ===== 레이아웃 조각 주입 + 칩 초기화 + ABOUT 내부 슬롯 로더 ===== -->
   <script>
     (function(){
-      const el = document.getElementById('site-banner');
-      const src = el.getAttribute('data-src') || 'Comp/Banner.html';
-      fetch(src, {cache:'no-store'})
-        .then(r => r.text())
-        .then(html => {
-          el.outerHTML = html;
-          initChips(); // 칩 이벤트 바인딩 및 카테고리 연동
-        })
-        .catch(err => console.error('Banner load failed:', err));
+      'use strict';
 
+      /**
+       * 공용 조각 로더
+       * @param {string} id         - placeholder element id
+       * @param {string} defaultSrc - data-src 없을 때 fallback 경로
+       * @param {Function} [onLoaded] - outerHTML 교체 후 콜백
+       */
+      function loadFragment(id, defaultSrc, onLoaded){
+        const host = document.getElementById(id);
+        if (!host) return;
+
+        const src = host.getAttribute('data-src') || defaultSrc;
+
+        fetch(src, { cache:'no-store' })
+          .then(r => r.text())
+          .then(html => {
+            host.outerHTML = html;
+            if (typeof onLoaded === 'function') onLoaded();
+          })
+          .catch(err => {
+            console.error('[NAVI TOUR] fragment load failed:', id, '→', src, err);
+          });
+      }
+
+      // 칩 초기화 (배너 삽입 후 한 번만 실행)
       function initChips(){
         const chips = document.querySelectorAll('.chiprail .chip');
         if (!chips.length) return;
 
-        // 텍스트 → 카테고리 키 매핑
         const MAP = {
-          '전체':'all', '서간도의 길':'sgando', '북간도의 길':'bgando',
-          '임시정부의 발자취':'gov', '극동 연해주':'fareast',
-          '일본 독립운동':'jpn', '하와이 독립운동':'hawaii'
+          '전체':'all',
+          '서간도의 길':'sgando',
+          '북간도의 길':'bgando',
+          '임시정부의 발자취':'gov',
+          '극동 연해주의 길':'fareast',
+          '일본내 독립운동':'jpn',
+          '하와이 독립운동':'hawaii'
         };
 
-        // 각 칩에 cat 키 주입 + 클릭 처리
-        chips.forEach(chip=>{
+        chips.forEach(chip => {
           const key = MAP[chip.textContent.trim()] || 'all';
           chip.dataset.cat = key;
-          chip.addEventListener('click', ()=>{
-            chips.forEach(c=>c.classList.remove('is-active'));
+
+          chip.addEventListener('click', () => {
+            chips.forEach(c => c.classList.remove('is-active'));
             chip.classList.add('is-active');
-            if (window.setCategory) window.setCategory(key); // 메인 카드 렌더 호출
+            if (window.setCategory) window.setCategory(key);
           });
         });
 
-        // URL ?cat= 동기화(깊은링크 진입)
-        const cur = new URLSearchParams(location.search).get('cat');
+        // URL ?cat= 동기화
+        const cur = new URLSearchParams(window.location.search).get('cat');
         if (cur) {
-          const t = Array.from(chips).find(c => c.dataset.cat === cur);
-          if (t) {
-            chips.forEach(c=>c.classList.remove('is-active'));
-            t.classList.add('is-active');
+          const target = Array.from(chips).find(c => c.dataset.cat === cur);
+          if (target) {
+            chips.forEach(c => c.classList.remove('is-active'));
+            target.classList.add('is-active');
           }
         }
       }
-    })();
-  </script>
 
-  <!-- ===== MAIN (외부 파일 주입) ===== -->
-  <div id="site-main" data-src="Main/Main.html"></div>
-  <script>
-    (function(){
-      const el = document.getElementById('site-main');
-      const src = el.getAttribute('data-src') || 'Main/Main.html';
-      fetch(src, {cache:'no-store'})
-        .then(r => r.text())
-        .then(html => {
-          el.outerHTML = html;
-          // ★ 메인 조각 주입 완료 신호: MainCards.js가 이 이벤트를 듣고 초기 렌더
-          window.dispatchEvent(new Event('navitour:main-loaded'));
-        })
-        .catch(err => console.error('Main load failed:', err));
+      /* ===== ABOUT 내부 슬롯 로더 (리뷰 / 문의섹션) ===== */
+
+      // 슬롯 ID → 가져올 HTML 경로
+      const SLOT_MAP = {
+        'nt-review-slot':  'Main/Main_Review.html',
+        'nt-receipt-slot': 'Main/Main_Receipt.html'
+      };
+
+      // 실제 로딩 함수: slot.innerHTML 채우고, 안의 script 다시 실행
+      function loadSlotInto(slot, url){
+        if (!slot || slot.dataset.loaded === '1') return;
+        slot.dataset.loaded = '1';
+
+        fetch(url, { cache:'no-store' })
+          .then(r => r.text())
+          .then(html => {
+            slot.innerHTML = html;
+
+            // 삽입된 HTML 안의 <script> 실행
+            const scripts = slot.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+              const s = document.createElement('script');
+              if (oldScript.src) {
+                s.src = oldScript.src;
+              } else {
+                s.textContent = oldScript.textContent;
+              }
+              document.body.appendChild(s);
+            });
+          })
+          .catch(err => {
+            console.error('[NAVI TOUR] slot load failed:', url, err);
+          });
+      }
+
+      // 현재 DOM에서 슬롯들을 찾아 로딩
+      function checkSlots(){
+        Object.keys(SLOT_MAP).forEach(id => {
+          const slot = document.getElementById(id);
+          if (slot && slot.dataset.loaded !== '1') {
+            loadSlotInto(slot, SLOT_MAP[id]);
+          }
+        });
+      }
+
+      let slotObserverStarted = false;
+      function startSlotObserver(){
+        if (slotObserverStarted) return;
+        slotObserverStarted = true;
+
+        // 처음 한 번 바로 체크
+        checkSlots();
+
+        // 이후로는 body 변화 감시해서,
+        // Main_about가 다시 그려질 때마다 새 슬롯을 찾아서 로드
+        const obs = new MutationObserver(checkSlots);
+        obs.observe(document.body, { childList:true, subtree:true });
+      }
+
+      // 조각 주입 시작
+      loadFragment('site-header', 'Comp/Header.html');
+      loadFragment('site-banner', 'Main/Main_Banner.html', initChips);
+      loadFragment('site-main', 'Main/Main.html', function(){
+        // 메인 조각 주입 완료 신호
+        window.dispatchEvent(new Event('navitour:main-loaded'));
+        // "전체" 카테고리에서 Main_about.html이 꽂힐 때를 대비해 슬롯 감시 시작
+        startSlotObserver();
+      });
+
+      // 본문 하단 문의 CTA 조각
+      loadFragment('site-receipt', 'Comp/Receipt.html');
+
+      // 푸터 조각
+      loadFragment('site-footer', 'Comp/Footer.html');
     })();
   </script>
 </body>
