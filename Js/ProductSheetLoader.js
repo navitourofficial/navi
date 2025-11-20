@@ -1,4 +1,3 @@
-/* PATH: /Js/ProductSheetLoader.js :: FULL REPLACE */
 /* NAVI TOUR – 상품 목록 통합 로더 (Google Sheets + 템플릿 박스 + 카드) */
 
 (function () {
@@ -189,7 +188,7 @@
     if (!tbody) {
       var tpl = document.getElementById('product-list');
       if (!tpl) {
-        console.warn('[ProductSheetLoader] product-list 템플릿을 찾을 수 없음');
+        console.warn('[ProductSheetLoader] product-list 템플릿을 찾을 수 없음 (Card/..._prod.html 로드 실패 가능)');
         return;
       }
       var frag = tpl.content.cloneNode(true);
@@ -199,6 +198,16 @@
         console.warn('[ProductSheetLoader] tbody 생성 실패');
         return;
       }
+    }
+
+    // ★ 행 템플릿이 없으면 여기서 바로 종료
+    if (!ROW_TPL_MAIN || !ROW_TPL_DETAIL) {
+      console.warn('[ProductSheetLoader] Prod_List_Box 템플릿을 찾을 수 없음 (Prod/Prod_List_Box.html 경로/대소문자 확인)');
+      tbody.innerHTML =
+        '<tr><td colspan="5" style="padding:14px 12px; text-align:center; color:#999; font-size:.9rem;">' +
+        '상품 행 템플릿(Prod/Prod_List_Box.html)을 불러오지 못했습니다.' +
+        '</td></tr>';
+      return;
     }
 
     tbody.innerHTML = '';
@@ -214,8 +223,6 @@
     }
 
     products.forEach(function (p) {
-      if (!ROW_TPL_MAIN || !ROW_TPL_DETAIL) return;
-
       var mainTr   = ROW_TPL_MAIN.content.firstElementChild.cloneNode(true);
       var detailTr = ROW_TPL_DETAIL.content.firstElementChild.cloneNode(true);
 
@@ -497,13 +504,10 @@
     initCardSlots(rootForCards);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      bootAll();
-    });
-  } else {
+  // ★ 항상 DOMContentLoaded 이후 실행: RouteDetail에서 템플릿 먼저 주입 후 작동
+  document.addEventListener('DOMContentLoaded', function () {
     bootAll();
-  }
+  });
 
   // Main_Cards.js에서 카드 컨테이너가 새로 mount될 때마다
   document.addEventListener('navitour:cards-container-mounted', function (e) {
