@@ -14,7 +14,8 @@
    2. 공통 유틸 함수
       2-1. DOM 셀렉터($, $all)
       2-2. CSS 변수 변경(setVar)
-      2-3. 메타 태그 관리(setMeta, absolute)
+      2-3. 화면 폭에 따른 배너 이미지 선택(getHeroImg)  [ADD]
+      2-4. 메타 태그 관리(setMeta, absolute)
    3. SEO 업데이트 로직(updateSEO)
    4. CTA 버튼 갱신(updateCTA)
    5. 칩바 위치/스크롤 보정
@@ -22,13 +23,6 @@
       5-2. toggleEdgeFades: 칩이 넘칠 때 스크롤 가능 클래스 토글
    6. 슬라이드 배경 설정(setSlideBg)
    7. 메인 전환 함수(go)
-      7-1. 락체크 및 카테고리 선택
-      7-2. CTA 테마 색상 적용
-      7-3. 슬라이드 전환(애니메이션/리듀스모션 대응)
-      7-4. 타이틀/서브텍스트 교체
-      7-5. 칩 상태 & 접근성 속성 갱신
-      7-6. URL 해시/세션 저장(깊은 링크)
-      7-7. SEO & CTA 동기화 후 상태 반영
    8. 초기 상태 읽기(readInitial)
    9. 이벤트 바인딩(bind)
    10. DOM 주입 대기 및 초기화(mountWhenReady)
@@ -56,7 +50,8 @@
     cats: [
       {
         slug:"all",
-        img:"Image/Banner/0.png",
+        img:"Image/Banner/0.png",              // 데스크탑(4K~1920)
+        imgNote:"Image/Banner/note/0.png",     // 노트북/모바일용
         href:"#detail",
         t:"역사의 현장에서, 미래를 꿈꾸는 여행",
         s:"독립전쟁의 발자취와 겨레의 소중한 유산을 통해, 꿈과 비전을 캐내는 창의적 인문기행",
@@ -65,6 +60,7 @@
       {
         slug:"seogando",
         img:"Image/Banner/1.png",
+        imgNote:"Image/Banner/note/1.png",
         href:"route/seogando.html",
         t:"서간도의 길을 걷다",
         s:"고구려와 백두산의 기상으로 외치는 대한독립만세",
@@ -73,6 +69,7 @@
       {
         slug:"bukgando",
         img:"Image/Banner/2.png",
+        imgNote:"Image/Banner/note/2.png",
         href:"route/bukgando.html",
         t:"북간도의 길을 걷다",
         s:"두만강을 건너 세운 희망, 독립의 불씨가 타오르다",
@@ -81,6 +78,7 @@
       {
         slug:"provisional",
         img:"Image/Banner/3.png",
+        imgNote:"Image/Banner/note/3.png",
         href:"route/provisional_gov.html",
         t:"임시정부의 발자취를 따라",
         s:"망명지의 하늘 아래, 대한의 이름이 다시 새기다",
@@ -89,6 +87,7 @@
       {
         slug:"primorye",
         img:"Image/Banner/4.png",
+        imgNote:"Image/Banner/note/4.png",
         href:"route/primorye.html",
         t:"극동 연해주의 길을 걷다",
         s:"가장 차가운 땅에서 가장 뜨거운 꿈을 꾸다",
@@ -97,6 +96,7 @@
       {
         slug:"japan",
         img:"Image/Banner/5.png",
+        imgNote:"Image/Banner/note/5.png",
         href:"route/japan.html",
         t:"일본 땅에서 피운 뜻",
         s:"바다를 건너 도착한 그곳에서, 자유의 뜻을 퍼트리다",
@@ -105,6 +105,7 @@
       {
         slug:"hawaii",
         img:"Image/Banner/6.png",
+        imgNote:"Image/Banner/note/6.png",
         href:"route/hawaii.html",
         t:"하와이에서 이어진 약속",
         s:"푸른 바다 위에서 피어난 뜨거운 조국의 혼",
@@ -124,7 +125,22 @@
   // 2-2. CSS 변수(--var) 변경용 헬퍼
   function setVar(name, value){ document.documentElement.style.setProperty(name, value); }
 
-  /* 2-3. 메타 태그 관리
+  /* 2-3. 화면 폭에 따른 배너 이미지 선택
+         - 1920px 이상 : 기본 img (4K~1920 공용)
+         - 그 미만     : imgNote가 있으면 imgNote, 없으면 img
+         - 모바일은 일단 노트북용과 같은 이미지 사용 (추후 분리 가능)
+  ------------------------------------------------------------------- */
+  function getHeroImg(cat){
+    if(!cat) return '';
+    const w = window.innerWidth || document.documentElement.clientWidth || 1280;
+
+    if(w >= 1920){
+      return cat.img || cat.imgNote || '';
+    }
+    return cat.imgNote || cat.img || '';
+  }
+
+  /* 2-4. 메타 태그 관리
      - setMeta: 존재하면 업데이트, 없으면 생성
      - absolute: 상대 경로를 절대 URL로 변환(og:image 용 등) */
 
@@ -133,14 +149,15 @@
        3. SEO 업데이트
           - 히어로 카테고리 변경 시 페이지 title / meta 태그 동기화
     ----------------------------------------------------------------- */
+    const heroImg = getHeroImg(cat) || cat.img;
     document.title = cat.t + " | NAVI TOUR";
     setMeta('name','description', cat.s);
     setMeta('property','og:title', cat.t + " | NAVI TOUR");
     setMeta('property','og:description', cat.s);
-    setMeta('property','og:image', absolute(cat.img));
+    setMeta('property','og:image', absolute(heroImg));
     setMeta('name','twitter:title', cat.t + " | NAVI TOUR");
     setMeta('name','twitter:description', cat.s);
-    setMeta('name','twitter:image', absolute(cat.img));
+    setMeta('name','twitter:image', absolute(heroImg));
   }
 
   function setMeta(attr, key, val){
@@ -202,6 +219,7 @@
         - 그라디언트 + 카테고리 이미지 조합
   ------------------------------------------------------------------- */
   function setSlideBg(el, img){
+    if(!el) return;
     el.style.backgroundImage = `${H.GRADIENT}, url('${img}')`;
   }
 
@@ -240,8 +258,8 @@
       // 일반 모션: 옆에서 슬라이드 인
       back.style.transform = `translateX(${dir > 0 ? '100%' : '-100%'})`;
     }
-    setSlideBg(back, cat.img); // 뒤쪽 슬라이드 배경만 먼저 교체
-    void back.offsetWidth;     // 리플로우로 transition 리셋
+    setSlideBg(back, getHeroImg(cat)); // 뒤쪽 슬라이드 배경만 먼저 교체
+    void back.offsetWidth;             // 리플로우로 transition 리셋
 
     // --- 7-3. 슬라이드 실행 단계 ---
     if(reduce){
@@ -349,7 +367,7 @@
     // 슬라이드 초기 위치(전환 애니 없이 바로 세팅)
     const A = $('#slideA'), B = $('#slideB');
     if(A && B){
-      setSlideBg(A, cat.img);
+      setSlideBg(A, getHeroImg(cat));
       A.style.transition='none';
       B.style.transition='none';
       A.style.transform='translateX(0)';
@@ -391,10 +409,19 @@
     stickAtHeroBottom();
     toggleEdgeFades();
 
-    // 리사이즈 때마다 다시 계산
+    // 리사이즈 때마다 다시 계산 + 현재 카테고리 배너 이미지도 재적용
     window.addEventListener('resize', ()=>{
       stickAtHeroBottom();
       toggleEdgeFades();
+
+      const cat   = H.cats[H.cur] || H.cats[0];
+      const img   = getHeroImg(cat);
+      const front = document.querySelector('.slide.front');
+      const back  = document.querySelector('.slide:not(.front)');
+      if(front && img) setSlideBg(front, img);
+      if(back  && img) setSlideBg(back, img);
+
+      updateSEO(cat);
     });
   }
 
@@ -416,8 +443,14 @@
         bind();
         // 카테고리별 이미지 미리 로드(전환 시 깜빡임 줄이기)
         H.cats.forEach(c=>{
-          const im = new Image();
-          im.src = c.img;
+          if(c.img){
+            const im = new Image();
+            im.src = c.img;
+          }
+          if(c.imgNote){
+            const im2 = new Image();
+            im2.src = c.imgNote;
+          }
         });
         return true;
       }
