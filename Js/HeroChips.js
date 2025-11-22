@@ -14,12 +14,12 @@
    2. 공통 유틸 함수
       2-1. DOM 셀렉터($, $all)
       2-2. CSS 변수 변경(setVar)
-      2-3. 화면 폭에 따른 배너 이미지 선택(getHeroImg)  [ADD]
+      2-3. 화면 폭에 따른 배너 이미지 선택(getHeroImg)
       2-4. 메타 태그 관리(setMeta, absolute)
    3. SEO 업데이트 로직(updateSEO)
    4. CTA 버튼 갱신(updateCTA)
    5. 칩바 위치/스크롤 보정
-      5-1. stickAtHeroBottom: 칩바를 히어로 하단에 붙이기
+      5-1. stickAtHeroBottom: 히어로 하단에 겹치게 (노트북 튜닝 포함)
       5-2. toggleEdgeFades: 칩이 넘칠 때 스크롤 가능 클래스 토글
    6. 슬라이드 배경 설정(setSlideBg)
    7. 메인 전환 함수(go)
@@ -47,11 +47,13 @@
     cur: 0,         // 현재 선택된 카테고리 인덱스
     lock: false,    // 전환 중 중복 호출 방지용 락
     // 메인 히어로에 표시할 카테고리 설정 목록
+    // img     : 데스크탑(4K~1920)
+    // imgNote : 노트북/모바일 공용
     cats: [
       {
         slug:"all",
-        img:"Image/Banner/0.png",              // 데스크탑(4K~1920)
-        imgNote:"Image/Banner/note/0.png",     // 노트북/모바일용
+        img:"Image/Banner/0.png",
+        imgNote:"Image/Banner/note/0.png",
         href:"#detail",
         t:"역사의 현장에서, 미래를 꿈꾸는 여행",
         s:"독립전쟁의 발자취와 겨레의 소중한 유산을 통해, 꿈과 비전을 캐내는 창의적 인문기행",
@@ -127,8 +129,7 @@
 
   /* 2-3. 화면 폭에 따른 배너 이미지 선택
          - 1920px 이상 : 기본 img (4K~1920 공용)
-         - 그 미만     : imgNote가 있으면 imgNote, 없으면 img
-         - 모바일은 일단 노트북용과 같은 이미지 사용 (추후 분리 가능)
+         - 그 미만     : imgNote 있으면 imgNote, 없으면 img
   ------------------------------------------------------------------- */
   function getHeroImg(cat){
     if(!cat) return '';
@@ -145,10 +146,6 @@
      - absolute: 상대 경로를 절대 URL로 변환(og:image 용 등) */
 
   function updateSEO(cat){
-    /* -----------------------------------------------------------------
-       3. SEO 업데이트
-          - 히어로 카테고리 변경 시 페이지 title / meta 태그 동기화
-    ----------------------------------------------------------------- */
     const heroImg = getHeroImg(cat) || cat.img;
     document.title = cat.t + " | NAVI TOUR";
     setMeta('name','description', cat.s);
@@ -197,13 +194,28 @@
      5. 칩바 위치/스크롤 관련 보정
   ------------------------------------------------------------------- */
 
-  // 5-1. 칩바를 히어로 하단에 겹쳐 붙이기
+  // 5-1. 칩바를 히어로 하단에 겹쳐 붙이기 (노트북에서 조금 더 위로)
   function stickAtHeroBottom(){
-    const row = $('.chips'), bar = $('.chipbar');
-    if(!row || !bar) return;
-    const h = Math.round(row.getBoundingClientRect().height || 0);
-    // 칩의 실제 높이를 기준으로 음수 margin-top 적용
-    bar.style.marginTop = h ? ('-' + h + 'px') : '';
+    const row  = $('.chips');
+    const bar  = $('.chipbar');
+    const hero = $('.hero');
+    if(!row || !bar || !hero) return;
+
+    const chipH = Math.round(row.getBoundingClientRect().height || 0);
+    if(!chipH){
+      bar.style.marginTop = '';
+      return;
+    }
+
+    // 기본: 칩 높이만큼만 위로 올림 (데스크탑에서 보이는 상태)
+    let overlap = chipH;
+
+    // 세로가 짧은 화면(노트북 등)에서는 약간 더 위로 끌어올리기
+    if(window.innerHeight && window.innerHeight < 900){
+      overlap = chipH + 8;   // 필요하면 8을 10~16 정도로 조절
+    }
+
+    bar.style.marginTop = '-' + overlap + 'px';
   }
 
   // 5-2. 칩이 가로로 넘칠 때 스크롤 가능 여부 표시
