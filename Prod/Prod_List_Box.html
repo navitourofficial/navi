@@ -1,0 +1,359 @@
+<!-- PATH: /Prod/Prod_List_Box.html :: FULL REPLACE -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <title>NAVI TOUR – Product Row Box (1열 이미지 리스트박스)</title>
+
+  <!-- 이 파일은 '상품 리스트 행 + 드롭다운 박스' 전용 템플릿 -->
+  <style>
+    :root{
+      --ink:#222222;
+      --muted:#666666;
+      --line:#e5e5ec;
+      --tag-bg:#f4f4f8;
+      --tag-ink:#555;
+      --btn:#5e2cff;
+      --btn-hover:#4b23c9;
+      --btn-ink:#5e2cff;
+      --btn-ink-hover:#ffffff;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    /* 기본 테이블 스타일 재정의 */
+    .lux5-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+    }
+    .lux5-table thead{
+      display:none; /* 기존 헤더 숨김 */
+    }
+    .lux5-table tbody tr > td{
+      padding:0;
+      border:none;
+    }
+
+    /* 메인 행/디테일 행 구분 */
+    .prod-row-main,
+    .prod-row-detail{
+      background:#fafafa;
+    }
+    .prod-row-detail > td{
+      padding:16px 20px 22px;
+      border-top:1px solid var(--line);
+    }
+
+    /* ===== 한 줄 상품 박스 (1열 이미지 레이아웃) ===== */
+    .product-item{
+      display:grid;
+      grid-template-columns:260px minmax(0,1fr) 170px; /* 이미지 / 본문 / 가격 */
+      gap:24px;
+      padding:16px 0 24px; /* 위 패딩 줄여서 타이틀 좀 더 위로 */
+      border-bottom:1px solid var(--line);
+      align-items:center;
+    }
+
+    /* 1:1 이미지 */
+    .prod-thumb{
+      width:100%;
+      aspect-ratio:1 / 1;
+      border-radius:12px;
+      overflow:hidden;
+      background:#ddd;
+    }
+    .prod-thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    /* 본문 */
+    .prod-body{
+      min-width:0;
+    }
+
+    .prod-title{
+      margin:0 0 6px;
+      font-size:1.1rem;
+      font-weight:700;
+      line-height:1.4;
+      color:var(--ink);
+    }
+
+    .prod-summary{
+      margin:0;
+      font-size:.9rem;
+      line-height:1.7;
+      color:var(--muted);
+      white-space:normal;
+    }
+
+    .prod-period{
+      margin-top:12px;
+      font-size:.9rem;
+      color:#444;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .prod-period i{
+      font-style:normal;
+      font-size:.9rem;
+    }
+
+    .prod-tags{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .prod-tags span{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:var(--tag-bg);
+      color:var(--tag-ink);
+      font-size:.78rem;
+    }
+
+    /* 답사지 박스 */
+    .prod-sites{
+      margin-top:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .prod-sites span{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:8px;
+      border:1px solid #ddd;
+      background:#ffffff;
+      color:#444;
+      font-size:.78rem;
+      white-space:nowrap;
+    }
+
+    /* 오른쪽 가격/버튼 */
+    .prod-side{
+      text-align:right;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      justify-content:flex-end; /* 버튼 좀 더 아래 */
+      gap:12px;
+      padding:16px 0;
+
+      border-left:1px solid var(--line);
+      padding-left:24px;
+    }
+
+    .prod-price{
+      font-weight:600;
+      font-size:1.05rem;
+      line-height:1.6;
+      color:#101010;
+    }
+
+    .prod-price .min{
+      color:#101010;
+    }
+    .prod-price .mid{
+      font-weight:500;
+      color:var(--muted);
+      padding:0 4px;
+    }
+    .prod-price .max{
+      color:#101010;
+    }
+
+    .prod-btn{
+      margin-top:4px;
+      padding:10px 18px;
+      font-size:.9rem;
+      font-weight:600;
+      border-radius:999px;
+      border:1px solid var(--btn);
+      background:#ffffff;
+      color:var(--btn-ink);
+      cursor:pointer;
+      transition:background .15s ease, color .15s ease, box-shadow .15s ease;
+      white-space:nowrap;
+    }
+    .prod-btn:hover{
+      background:var(--btn-hover);
+      color:var(--btn-ink-hover);
+      box-shadow:0 6px 14px rgba(72,52,212,.24);
+    }
+    .prod-btn:focus-visible{
+      outline:2px solid #000;
+      outline-offset:2px;
+    }
+
+    /* 디테일 박스(접히는 부분) */
+    .prod-detail-wrap{
+      font-size:.9rem;
+      color:#444;
+      line-height:1.7;
+    }
+    .prod-detail-wrap .prod-desc{
+      margin:0 0 8px;
+    }
+    .prod-detail-wrap .prod-meta{
+      margin:0 0 6px;
+      color:#555;
+    }
+    .prod-detail-wrap .prod-location{
+      margin:0 0 10px;
+      color:#555;
+    }
+    .prod-detail-wrap .prod-detail-link{
+      display:inline-block;
+      margin-top:4px;
+      font-size:.86rem;
+      color:#5e2cff;
+      text-decoration:none;
+      border-bottom:1px solid rgba(94,44,255,.2);
+      padding-bottom:1px;
+    }
+    .prod-detail-wrap .prod-detail-link:hover{
+      border-bottom-color:rgba(94,44,255,.5);
+    }
+
+    /* 반응형 */
+    @media (max-width:1080px){
+      .product-item{
+        grid-template-columns:230px minmax(0,1fr) 160px;
+      }
+    }
+
+    @media (max-width:960px){
+      .product-item{
+        grid-template-columns:220px minmax(0,1fr);
+        grid-template-areas:
+          "img body"
+          "side side";
+        align-items:flex-start;
+      }
+      .prod-thumb{ grid-area:img; }
+      .prod-body{  grid-area:body; }
+      .prod-side{
+        grid-area:side;
+        align-items:flex-start;
+        text-align:left;
+        border-left:none;
+        padding-left:0;
+        border-top:1px solid var(--line);
+        padding-top:14px;
+        margin-top:8px;
+      }
+    }
+
+    @media (max-width:640px){
+      .product-item{
+        grid-template-columns:1fr;
+        grid-template-areas:
+          "img"
+          "body"
+          "side";
+        row-gap:14px;
+      }
+      .prod-side{
+        align-items:flex-start;
+        text-align:left;
+      }
+      .prod-thumb{
+        max-width:320px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 메인 행: ProductSheetLoader.renderProducts()에서 사용 -->
+  <template id="prod-row-main">
+    <tr class="prod-row-main">
+      <td colspan="5">
+        <section class="product-item">
+          <div class="prod-thumb">
+            <!-- JS에서 p.image 있으면 .prod-image src 세팅 -->
+            <img class="prod-image" src="" alt="상품 이미지">
+          </div>
+
+          <div class="prod-body">
+            <h2 class="prod-title">상품명</h2>
+
+            <!-- 요약 (없으면 JS에서 제거) -->
+            <p class="prod-summary">간략 설명 텍스트</p>
+
+            <!-- 기간: JS에서 .prod-term에 "4박 5일" 같은 라벨 채움 -->
+            <div class="prod-period">
+              <i>🗓</i>
+              <span class="prod-term">여행 기간</span>
+            </div>
+
+            <!-- 테마 + 태그: JS에서 .prod-tags 안에 span 여러 개 생성 -->
+            <div class="prod-tags">
+              <span>테마/태그 샘플</span>
+            </div>
+
+            <!-- 답사지: Q열 sites, 쉼표 구분 / 해시 없이 박스 -->
+            <div class="prod-sites">
+              <span>답사지 샘플</span>
+            </div>
+          </div>
+
+          <aside class="prod-side">
+            <!-- 최소~최대 가격: JS에서 각 span 채움 -->
+            <div class="prod-price">
+              <span class="min"></span>
+              <span class="mid"></span>
+              <span class="max"></span>
+            </div>
+
+            <!-- 버튼: 상세페이지 이동 -->
+            <button type="button" class="prod-btn pd-detail-toggle">
+              판매상품보기
+            </button>
+          </aside>
+        </section>
+      </td>
+    </tr>
+  </template>
+
+  <!-- 디테일 행: 데이터만 채워두고 화면에서는 안 씀 -->
+  <template id="prod-row-detail">
+    <tr class="prod-row-detail" style="display:none;">
+      <td colspan="5">
+        <div class="prod-detail-wrap">
+          <!-- description (J열) -->
+          <p class="prod-desc">
+            상품 상세 설명이 들어가는 영역입니다.
+          </p>
+
+          <!-- 출발 인원 / 코스 etc (meta) -->
+          <p class="prod-meta">
+            출발 인원 / 코스 등 메타정보
+          </p>
+
+          <!-- 주요 방문지 -->
+          <p class="prod-location">
+            주요 방문지 리스트
+          </p>
+
+          <!-- 상품 상세페이지 링크 (시트 D열 address 우선) -->
+          <a class="prod-detail-link" href="#" target="_blank" rel="noopener">
+            상품 상세 페이지 열기
+          </a>
+        </div>
+      </td>
+    </tr>
+  </template>
+
+</body>
+</html>
