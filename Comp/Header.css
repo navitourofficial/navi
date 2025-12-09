@@ -1,3 +1,5 @@
+/* PATH: /Comp/Header.css :: FULL REPLACE */
+
 /* =========================================================
    NAVI TOUR – Header.css
    PC: 일반 드롭다운 + 중앙 메가 메뉴
@@ -79,6 +81,7 @@ header.site-head{
   color:#fff;
   backdrop-filter:saturate(120%) blur(6px);
   -webkit-backdrop-filter:saturate(120%) blur(6px);
+  overflow:visible;
 }
 
 /* 4. 헤더 레이아웃 (flex) */
@@ -238,7 +241,7 @@ header.site-head{
 
 .site-head .mega-host > .dropdown-menu.mega{
   position:fixed;
-  top:calc(var(--header-h) + 12px); /* 헤더 바로 아래 대략 위치 */
+  top:calc(var(--header-h) + 12px);
   left:calc(max(20px, (100vw - var(--mega-w)) / 2));
   right:calc(max(20px, (100vw - var(--mega-w)) / 2));
   margin-top:0;
@@ -298,15 +301,16 @@ header.site-head{
 
 /* =========================================================
    13. 모바일(720px 이하)
-   - 1줄: 로고 + 오른쪽 메뉴
-   - 2줄: tabs-mobile (전체/중국/일본/미국/러시아)
-   - 드롭다운: 탭 밖, 화면에 떠 있는 팝업
 ========================================================= */
 @media (max-width:720px){
 
   header.site-head{
     --head-line: rgba(15,23,42,.35);
     border-bottom:1px solid rgba(15,23,42,.5);
+    /* iOS Safari 버그 회피: fixed 자식이 헤더 안에 갇히는 문제 */
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+    overflow:visible;
   }
 
   .head-row{
@@ -340,7 +344,7 @@ header.site-head{
     display:none;
   }
 
-  /* 2행: 모바일 탭 (전체/중국/일본/미국/러시아) */
+  /* 2행: 모바일 탭 */
   .tabs-mobile{
     order:4;
     width:100%;
@@ -373,15 +377,10 @@ header.site-head{
     font-size:13px;
   }
 
-  /* -------------------------------
-     모바일: 드롭다운을 탭 밖, 화면 상단에 팝업처럼
-     - width / white-space 재정의해서 잘리는 문제 해결
-  --------------------------------- */
-
-  /* 일반 드롭다운 (중국, 일본 등) */
+  /* 모바일 일반 드롭다운: 뷰포트 fixed, 헤더 밖으로 */
   .site-head .tabs-mobile .dropdown-menu{
     position:fixed;
-    top:80px;               /* 1행+2행 바로 아래 근처 */
+    top:80px;
     left:50%;
     transform:translateX(-50%);
     margin-top:0;
@@ -395,10 +394,10 @@ header.site-head{
     overflow-y:auto;
 
     border-radius:8px;
-    z-index:2000;
+    z-index:9999;
   }
 
-  /* 메가메뉴(전체): 중앙 2열 그리드 */
+  /* 모바일 메가메뉴(전체) */
   .site-head .tabs-mobile .mega-host > .dropdown-menu.mega{
     position:fixed;
     top:80px;
@@ -416,7 +415,7 @@ header.site-head{
     display:none;
     grid-template-columns:repeat(2, minmax(140px, 1fr));
     border-radius:10px;
-    z-index:2000;
+    z-index:9999;
   }
 
   .site-head .tabs-mobile .mega-host:hover > .dropdown-menu.mega,
@@ -425,7 +424,7 @@ header.site-head{
   }
 }
 
-/* 14. Hero CTA 시인성 패치 (기존 유지) */
+/* 14. Hero CTA 시인성 패치 */
 body .hero .cta{
   display:inline-flex; align-items:center; gap:10px;
   padding:12px 22px !important;
