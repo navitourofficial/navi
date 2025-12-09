@@ -1,521 +1,712 @@
-// PATH: /Js/HeroChips.js :: FULL FILE
+/* PATH: /Js/ProductSheetLoader.js :: FULL REPLACE */
+/* NAVI TOUR – 상품 목록 통합 로더 (Google Sheets + 템플릿 박스 + 카드)
+   - 시트 구조(열) 최신 버전 반영
+   - 상세 페이지에서도 재사용 가능한 공용 API(NaviProd) 제공
+*/
 
-/* =======================================================================
-   NAVI TOUR – 메인 히어로 배너 + 칩바 제어 스크립트
+(function () {
+  'use strict';
 
-   [파일 전체 개요]
-   - 메인 페이지 상단의 히어로 배너(이미지/텍스트)와
-     아래 카테고리 칩(버튼)들을 제어하는 전용 모듈.
+  /* -------------------------------------------------------
+     0. 행 템플릿 로더 (Prod/Prod_List_Box.html)  [테이블 전용]
+  ------------------------------------------------------- */
+  var ROW_TPL_MAIN = null;
+  var ROW_TPL_DETAIL = null;
+  var tplReadyPromise = null;
 
-   [목차]
+  function ensureRowTemplates() {
+    if (ROW_TPL_MAIN && ROW_TPL_DETAIL) return Promise.resolve();
+    if (tplReadyPromise) return tplReadyPromise;
 
-   0. 모듈 래퍼(IIFE)
-   1. 전역 상태/설정 객체 H
-   2. 공통 유틸 함수
-      2-1. DOM 셀렉터($, $all)
-      2-2. CSS 변수 변경(setVar)
-      2-3. 화면 폭에 따른 배너 이미지 선택(getHeroImg)
-      2-4. 메타 태그 관리(setMeta, absolute)
-   3. SEO 업데이트 로직(updateSEO)
-   4. CTA 버튼 갱신(updateCTA)
-   5. 칩바 위치/스크롤 보정
-      5-1. stickAtHeroBottom: 히어로 하단에 겹치게 (노트북 튜닝 포함)
-      5-2. toggleEdgeFades: 칩이 넘칠 때 스크롤 가능 클래스 토글
-   6. 슬라이드 배경 설정(setSlideBg)
-   7. 메인 전환 함수(go)
-   8. 초기 상태 읽기(readInitial)
-   9. 이벤트 바인딩(bind)
-   10. DOM 주입 대기 및 초기화(mountWhenReady)
-   11. hashchange 핸들러(외부에서 해시로 카테고리 바꿀 때 대응)
-   12. DOMContentLoaded 시점에 모듈 시동
-   13. 외부 공개 API(window.NT_HERO)
+    tplReadyPromise = fetch('Prod/Prod_List_Box.html', { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function (html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
 
-   - 이 파일은 단독으로도 동작하지만, Banner.html 구조
-     (slideA/slideB, chipbar, chipRow, heroTitle, heroSub, heroCta)를
-     전제로 함.
-   ======================================================================= */
+        var styleEl = doc.querySelector('style');
+        if (styleEl) {
+          document.head.appendChild(styleEl.cloneNode(true));
+        }
 
-(function(){
+        ROW_TPL_MAIN   = doc.getElementById('prod-row-main');
+        ROW_TPL_DETAIL = doc.getElementById('prod-row-detail');
 
-  /* -------------------------------------------------------------------
-     1. 전역 상태/설정 객체 H
-        - 전환 시간, 그라디언트, 현재 인덱스, 락 상태, 카테고리 정의
-  ------------------------------------------------------------------- */
-  const H = {
-    SLIDE_MS: 420,  // 슬라이드 애니메이션 기본 시간(ms)
-    GRADIENT: "linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.62) 100%)",
-    cur: 0,         // 현재 선택된 카테고리 인덱스
-    lock: false,    // 전환 중 중복 호출 방지용 락
-    // 메인 히어로에 표시할 카테고리 설정 목록
-    // img     : 데스크탑(4K~1920)
-    // imgNote : 노트북/모바일 공용
-    cats: [
-      {
-        slug:"all",
-        img:"Image/Banner/0.webp",
-        imgNote:"Image/Banner/note/0.webp",
-        href:"#detail",
-        t:"역사의 현장에서, 미래를 꿈꾸는 여행",
-        s:"독립전쟁의 발자취와 겨레의 소중한 유산을 통해, 꿈과 비전을 캐내는 창의적 인문기행",
-        theme:{ cta1:"#D7BB83", cta2:"#C3A36A" }
-      },
-      {
-        slug:"seogando",
-        img:"Image/Banner/1.webp",
-        imgNote:"Image/Banner/note/1.webp",
-        href:"route/seogando.html",
-        t:"서간도의 길을 걷다",
-        s:"고구려와 백두산의 기상으로 외치는 대한독립만세",
-        theme:{ cta1:"#D0B37A", cta2:"#B69253" }
-      },
-      {
-        slug:"bukgando",
-        img:"Image/Banner/2.webp",
-        imgNote:"Image/Banner/note/2.webp",
-        href:"route/bukgando.html",
-        t:"북간도의 길을 걷다",
-        s:"두만강을 건너 세운 희망, 독립의 불씨가 타오르다",
-        theme:{ cta1:"#C9B07D", cta2:"#A98D4E" }
-      },
-      {
-        slug:"provisional",
-        img:"Image/Banner/3.webp",
-        imgNote:"Image/Banner/note/3.webp",
-        href:"route/provisional_gov.html",
-        t:"임시정부의 발자취를 따라",
-        s:"망명지의 하늘 아래, 대한의 이름이 다시 새기다",
-        theme:{ cta1:"#CFB27A", cta2:"#B4945A" }
-      },
-      {
-        slug:"primorye",
-        img:"Image/Banner/4.webp",
-        imgNote:"Image/Banner/note/4.webp",
-        href:"route/primorye.html",
-        t:"극동 연해주의 길을 걷다",
-        s:"가장 차가운 땅에서 가장 뜨거운 꿈을 꾸다",
-        theme:{ cta1:"#C2A66F", cta2:"#A78646" }
-      },
-      {
-        slug:"japan",
-        img:"Image/Banner/5.webp",
-        imgNote:"Image/Banner/note/5.webp",
-        href:"route/japan.html",
-        t:"일본 땅에서 피운 뜻",
-        s:"바다를 건너 도착한 그곳에서, 자유의 뜻을 퍼트리다",
-        theme:{ cta1:"#D4BB86", cta2:"#B8985B" }
-      },
-      {
-        slug:"hawaii",
-        img:"Image/Banner/6.webp",
-        imgNote:"Image/Banner/note/6.webp",
-        href:"route/hawaii.html",
-        t:"하와이에서 이어진 약속",
-        s:"푸른 바다 위에서 피어난 뜨거운 조국의 혼",
-        theme:{ cta1:"#E0C28D", cta2:"#C0A063" }
-      }
-    ]
+        if (!ROW_TPL_MAIN || !ROW_TPL_DETAIL) {
+          console.warn('[ProductSheetLoader] Prod_List_Box 템플릿을 찾을 수 없음');
+        }
+      })
+      .catch(function (err) {
+        console.error('[ProductSheetLoader] Prod_List_Box 로드 실패', err);
+      });
+
+    return tplReadyPromise;
+  }
+
+  /* -------------------------------------------------------
+     1. 시트 매핑
+  ------------------------------------------------------- */
+  const SHEETS = {
+    china:  { sheetId: '1mdnUo2a3si0WXSQhHDq2oXO2FUNdBXJ-WbHJX7Hc9G4', gid: '251415080' },   // 중국
+    japan:  { sheetId: '1mdnUo2a3si0WXSQhHDq2oXO2FUNdBXJ-WbHJX7Hc9G4', gid: '1959739503' },  // 일본
+    russia: { sheetId: '1mdnUo2a3si0WXSQhHDq2oXO2FUNdBXJ-WbHJX7Hc9G4', gid: '1699478111' },  // 러시아
+    usa:    { sheetId: '1mdnUo2a3si0WXSQhHDq2oXO2FUNdBXJ-WbHJX7Hc9G4', gid: '637057816' }    // 미국
+    // 국내 시트 쓰면 여기 추가
   };
 
-  /* -------------------------------------------------------------------
-     2. 공통 유틸 함수
-  ------------------------------------------------------------------- */
+  /* -------------------------------------------------------
+     2. 컬럼 인덱스
+  ------------------------------------------------------- */
+  const COL = {
+    release:     0,   // A
+    priority:    1,   // B
+    image:       2,   // C: thumb
+    address:     3,   // D: address (상세페이지 주소)
 
-  // 2-1. DOM 셀렉터 단축 함수
-  function $(sel, base=document){ return base.querySelector(sel); }
-  function $all(sel, base=document){ return Array.prototype.slice.call(base.querySelectorAll(sel)); }
+    slug:        4,   // E
+    country:     5,   // F
+    region:      6,   // G
+    title:       7,   // H
+    summary:     8,   // I
+    description: 9,   // J
+    nights:     10,   // K
+    days:       11,   // L
+    minPax:     12,   // M
+    route:      13,   // N
+    finishroute:14,   // O
+    location:   15,   // P
+    sites:      16,   // Q: 답사지
+    theme:      17,   // R
+    tags:       18,   // S
 
-  // 2-2. CSS 변수(--var) 변경용 헬퍼
-  function setVar(name, value){ document.documentElement.style.setProperty(name, value); }
+    price:      19,   // T: priceMin
+    priceMin:   19,   // T
+    priceMax:   20    // U
+  };
 
-  /* 2-3. 화면 폭에 따른 배너 이미지 선택
-         - 1920px 이상 : 기본 img (4K~1920 공용)
-         - 그 미만     : imgNote 있으면 imgNote, 없으면 img
-  ------------------------------------------------------------------- */
-  function getHeroImg(cat){
-    if(!cat) return '';
-    const w = window.innerWidth || document.documentElement.clientWidth || 1280;
+  const TABLE_CACHE = new Map();
 
-    if(w >= 1920){
-      return cat.img || cat.imgNote || '';
+  function getCell(cells, idx) {
+    if (idx == null || idx < 0) return '';
+    const cell = cells[idx];
+    if (!cell) return '';
+    return cell.v != null ? cell.v : '';
+  }
+
+  /* -------------------------------------------------------
+     3. Google Sheets(gviz)
+  ------------------------------------------------------- */
+  async function fetchTable(sheetKey) {
+    if (TABLE_CACHE.has(sheetKey)) {
+      return TABLE_CACHE.get(sheetKey);
     }
-    return cat.imgNote || cat.img || '';
-  }
 
-  /* 2-4. 메타 태그 관리
-     - setMeta: 존재하면 업데이트, 없으면 생성
-     - absolute: 상대 경로를 절대 URL로 변환(og:image 용 등) */
-
-  function updateSEO(cat){
-    const heroImg = getHeroImg(cat) || cat.img;
-    document.title = cat.t + " | NAVI TOUR";
-    setMeta('name','description', cat.s);
-    setMeta('property','og:title', cat.t + " | NAVI TOUR");
-    setMeta('property','og:description', cat.s);
-    setMeta('property','og:image', absolute(heroImg));
-    setMeta('name','twitter:title', cat.t + " | NAVI TOUR");
-    setMeta('name','twitter:description', cat.s);
-    setMeta('name','twitter:image', absolute(heroImg));
-  }
-
-  function setMeta(attr, key, val){
-    // attr: "name" / "property" 등, key: 메타 이름, val: content 값
-    let m = document.head.querySelector(`meta[${attr}="${key}"]`);
-    if(!m){
-      m = document.createElement('meta');
-      m.setAttribute(attr, key);
-      document.head.appendChild(m);
+    const conf = SHEETS[sheetKey];
+    if (!conf) {
+      console.warn('[ProductSheetLoader] 정의되지 않은 sheetKey:', sheetKey);
+      return null;
     }
-    m.setAttribute('content', val);
+
+    const url =
+      'https://docs.google.com/spreadsheets/d/' +
+      conf.sheetId +
+      '/gviz/tq?tqx=out:json&gid=' +
+      conf.gid;
+
+    const res = await fetch(url, { cache: 'no-store' });
+    const txt = await res.text();
+
+    const json = JSON.parse(txt.substring(47).slice(0, -2));
+    const table = json.table;
+    TABLE_CACHE.set(sheetKey, table);
+    return table;
   }
 
-  function absolute(path){
-    // 상대 경로를 현재 위치 기준 절대 URL로 변환
-    try{
-      return new URL(path, location.origin + location.pathname).toString();
-    }catch(e){
-      // URL 생성이 실패하면 원본 경로 그대로 반환
-      return path;
+  /* -------------------------------------------------------
+     4. 행 → 상품 객체
+  ------------------------------------------------------- */
+  function mapRowToProduct(row) {
+    const c = (row && row.c) ? row.c : [];
+    return {
+      slug:        getCell(c, COL.slug),
+      country:     getCell(c, COL.country),
+      region:      getCell(c, COL.region),
+      title:       getCell(c, COL.title),
+      summary:     getCell(c, COL.summary),
+      description: getCell(c, COL.description),
+      nights:      getCell(c, COL.nights),
+      days:        getCell(c, COL.days),
+      price:       getCell(c, COL.price),
+      priceMin:    getCell(c, COL.priceMin),
+      priceMax:    getCell(c, COL.priceMax),
+      minPax:      getCell(c, COL.minPax),
+      theme:       getCell(c, COL.theme),
+      tags:        getCell(c, COL.tags),
+      route:       getCell(c, COL.route),
+      finishroute: getCell(c, COL.finishroute),
+      location:    getCell(c, COL.location),
+      sites:       getCell(c, COL.sites),
+      address:     getCell(c, COL.address),
+      release:     String(getCell(c, COL.release)).trim().toUpperCase(),
+      priority:    Number(getCell(c, COL.priority) || 9999),
+      image:       getCell(c, COL.image)
+    };
+  }
+
+  /* -------------------------------------------------------
+     5. 필터링
+  ------------------------------------------------------- */
+  function extractProducts(table, regionKeyword) {
+    if (!table) return [];
+
+    const rows = table.rows || [];
+    const keyword = (regionKeyword || '').trim();
+    const useKeyword = keyword.length > 0;
+
+    const products = rows
+      .map(mapRowToProduct)
+      .filter(function (p) {
+        if (!p.title) return false;
+        if (p.release !== 'OPEN') return false;
+        if (useKeyword) {
+          if (!p.region) return false;
+          if (String(p.region).indexOf(keyword) === -1) return false;
+        }
+        return true;
+      })
+      .sort(function (a, b) {
+        return a.priority - b.priority;
+      });
+
+    return products;
+  }
+
+  /* -------------------------------------------------------
+     6. 포맷 유틸
+  ------------------------------------------------------- */
+  function formatPrice(value) {
+    if (value == null || value === '') return '';
+    var num = Number(value);
+    if (isFinite(num)) {
+      return num.toLocaleString('ko-KR') + '원 ~';
     }
+    return String(value);
   }
 
-  /* -------------------------------------------------------------------
-     4. CTA 버튼 갱신(updateCTA)
-        - 카테고리별 상세보기 링크를 히어로 CTA에 반영
-  ------------------------------------------------------------------- */
-  function updateCTA(cat){
-    const cta = $('#heroCta');
-    if(!cta) return;
-    const href = cat.href || '#detail';
-    cta.setAttribute('href', href);
-    cta.setAttribute('data-slug', cat.slug);
+  function formatKRW(val) {
+    if (val == null || val === '') return '';
+    var num = Number(val);
+    if (!isFinite(num)) return '';
+    return '₩ ' + num.toLocaleString('ko-KR');
   }
 
-  /* -------------------------------------------------------------------
-     5. 칩바 위치/스크롤 관련 보정
-  ------------------------------------------------------------------- */
+  function formatPriceRange(min, max) {
+    var hasMin = min != null && min !== '';
+    var hasMax = max != null && max !== '';
+    if (!hasMin && !hasMax) return '';
+    if (hasMin && hasMax) {
+      return formatKRW(min) + ' ~ ' + formatKRW(max);
+    }
+    if (hasMin) return formatKRW(min);
+    return formatKRW(max);
+  }
 
-  // 5-1. 칩바를 히어로 하단에 겹쳐 붙이기 (노트북에서 조금 더 위로)
-  function stickAtHeroBottom(){
-    const row  = $('.chips');
-    const bar  = $('.chipbar');
-    const hero = $('.hero');
-    if(!row || !bar || !hero) return;
+  function formatPeriod(nights, days) {
+    var n = nights != null && nights !== '' ? Number(nights) : null;
+    var d = days   != null && days   !== '' ? Number(days)   : null;
+    var label = '';
+    if (isFinite(n) && n > 0) label += n + '박';
+    if (isFinite(d) && d > 0) {
+      label += (label ? ' ' : '') + d + '일';
+    }
+    if (!label) label = '일정 협의';
+    return label;
+  }
 
-    const chipH = Math.round(row.getBoundingClientRect().height || 0);
-    if(!chipH){
-      bar.style.marginTop = '';
+  function buildDetailHref(slug) {
+    if (!slug) return '#';
+    return 'product/' + encodeURIComponent(slug) + '.html';
+  }
+
+  function formatKRWPlain(val) {
+    if (val == null || val === '') return '';
+    var num = Number(val);
+    if (!isFinite(num)) return '';
+    return num.toLocaleString('ko-KR') + '원';
+  }
+
+  function splitTags(raw) {
+    if (!raw) return [];
+    return String(raw)
+      .split(/[,\s#/]+/)
+      .map(function (t) { return t.trim(); })
+      .filter(Boolean);
+  }
+
+  // 답사지: 쉼표 기준으로만 쪼갬 (공백/해시 사용 안 함)
+  function splitSites(raw) {
+    if (!raw) return [];
+    return String(raw)
+      .split(',')
+      .map(function (t) { return t.trim(); })
+      .filter(Boolean);
+  }
+
+  /* -------------------------------------------------------
+     7. 리스트 렌더링
+  ------------------------------------------------------- */
+  function renderProducts(mountEl, products) {
+    var tbody = mountEl.querySelector('table tbody');
+
+    if (!tbody) {
+      var tpl = document.getElementById('product-list');
+      if (!tpl) {
+        console.warn('[ProductSheetLoader] product-list 템플릿을 찾을 수 없음');
+        return;
+      }
+      var frag = tpl.content.cloneNode(true);
+      mountEl.appendChild(frag);
+      tbody = mountEl.querySelector('table tbody');
+      if (!tbody) {
+        console.warn('[ProductSheetLoader] tbody 생성 실패');
+        return;
+      }
+    }
+
+    tbody.innerHTML = '';
+
+    if (!products.length) {
+      var emptyTr = document.createElement('tr');
+      emptyTr.innerHTML =
+        '<td colspan="5" style="padding:14px 12px; text-align:center; color:#999; font-size:.9rem;">' +
+        '준비 중인 상품입니다.' +
+        '</td>';
+      tbody.appendChild(emptyTr);
       return;
     }
 
-    // 기본: 칩 높이만큼만 위로 올림 (데스크탑에서 보이는 상태)
-    let overlap = chipH;
+    products.forEach(function (p) {
+      if (!ROW_TPL_MAIN || !ROW_TPL_DETAIL) return;
 
-    // 세로가 짧은 화면(노트북 등)에서는 약간 더 위로 끌어올리기
-    if(window.innerHeight && window.innerHeight < 900){
-      overlap = chipH + 8;   // 필요하면 8을 10~16 정도로 조절
-    }
+      var mainTr   = ROW_TPL_MAIN.content.firstElementChild.cloneNode(true);
+      var detailTr = ROW_TPL_DETAIL.content.firstElementChild.cloneNode(true);
 
-    bar.style.marginTop = '-' + overlap + 'px';
-  }
+      var titleEl    = mainTr.querySelector('.prod-title');
+      var summaryEl  = mainTr.querySelector('.prod-summary');
+      var termEl     = mainTr.querySelector('.prod-term');
+      var priceEl    = mainTr.querySelector('.prod-price');
+      var imgEl      = mainTr.querySelector('.prod-image');
+      var tagsWrap   = mainTr.querySelector('.prod-tags');
+      var sitesWrap  = mainTr.querySelector('.prod-sites');
+      var btn        = mainTr.querySelector('.pd-detail-toggle');
 
-  // 5-2. 칩이 가로로 넘칠 때 스크롤 가능 여부 표시
-  function toggleEdgeFades(){
-    const rail = $('#chipRail');
-    if(!rail) return;
-    const scrollable = rail.scrollWidth > rail.clientWidth + 2;
-    rail.classList.toggle('is-scrollable', scrollable);
-  }
+      if (titleEl) titleEl.textContent = p.title || '';
 
-  /* -------------------------------------------------------------------
-     6. 슬라이드 배경 설정
-        - 그라디언트 + 카테고리 이미지 조합
-  ------------------------------------------------------------------- */
-  function setSlideBg(el, img){
-    if(!el) return;
-    el.style.backgroundImage = `${H.GRADIENT}, url('${img}')`;
-  }
-
-  /* -------------------------------------------------------------------
-     7. 메인 전환 함수(go)
-        - 칩 클릭 / 해시 변경 시 호출
-        - 슬라이드/텍스트/SEO/CTA/URL 상태까지 한 번에 변경
-  ------------------------------------------------------------------- */
-  function go(idx, btn){
-    // 전환 중이거나 이미 같은 인덱스면 무시
-    if(H.lock || idx === H.cur) return;
-
-    const cat = H.cats[idx] || H.cats[0];
-    H.lock = true;   // 중복 호출 방지 락
-
-    // 7-2. CTA 그라디언트 색상 적용
-    setVar('--cta1', cat.theme.cta1);
-    setVar('--cta2', cat.theme.cta2);
-
-    // 현재/다음 슬라이드 엘리먼트 선택
-    const A = $('#slideA'), B = $('#slideB');
-    const front = A.classList.contains('front') ? A : B;
-    const back  = front === A ? B : A;
-    const dir   = idx > H.cur ? 1 : -1;  // 오른쪽/왼쪽 이동 방향
-
-    // 사용자 환경설정: 모션 줄이기 여부
-    const reduce = window.matchMedia &&
-                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // --- 7-3. 슬라이드 준비 단계 ---
-    back.style.transition = 'none';
-    if(reduce){
-      // 모션 줄이기: 투명도 페이드 방식
-      back.style.opacity = '0';
-    }else{
-      // 일반 모션: 옆에서 슬라이드 인
-      back.style.transform = `translateX(${dir > 0 ? '100%' : '-100%'})`;
-    }
-    setSlideBg(back, getHeroImg(cat)); // 뒤쪽 슬라이드 배경만 먼저 교체
-    void back.offsetWidth;             // 리플로우로 transition 리셋
-
-    // --- 7-3. 슬라이드 실행 단계 ---
-    if(reduce){
-      front.style.transition = `opacity 200ms ease`;
-      back .style.transition = `opacity 200ms ease`;
-      front.style.opacity = '0';
-      back .style.opacity  = '1';
-    }else{
-      const ease = `transform ${H.SLIDE_MS}ms cubic-bezier(.22,.61,.36,1)`;
-      front.style.transition = ease;
-      back .style.transition = ease;
-      front.style.transform  = `translateX(${dir > 0 ? '-100%' : '100%'})`;
-      back .style.transform  = `translateX(0)`;
-    }
-
-    // --- 7-4. 텍스트(타이틀/서브) 전환 ---
-    const t = $('#heroText'), h = $('#heroTitle'), p = $('#heroSub');
-    if(t){
-      t.style.opacity = '0';   // 살짝 페이드 아웃
-      setTimeout(()=>{
-        h.textContent = cat.t;
-        p.textContent = cat.s;
-        t.style.opacity = '1'; // 새 텍스트로 페이드 인
-      }, 140);
-    }
-
-    // --- 7-5. 칩 상태 & 접근성 속성 갱신 ---
-    const row = $('#chipRow');
-    if(row){
-      $all('.chip', row).forEach(x=>{
-        const active = x === btn;
-        x.classList.toggle('is-active', active);
-        x.setAttribute('aria-pressed', active ? 'true' : 'false');
-      });
-    }
-
-    // --- 7-6. URL 해시/세션 스토리지에 현재 카테고리 기록 ---
-    try{
-      const u = new URL(location.href);
-      u.hash = 'cat=' + cat.slug;
-      history.replaceState(null,'',u.toString());
-      sessionStorage.setItem('heroCat', cat.slug);
-    }catch(e){
-      // 구형 브라우저 대비: 최소한 해시만 변경
-      location.hash = 'cat=' + cat.slug;
-    }
-
-    // --- 7-7. SEO & CTA 업데이트 ---
-    updateSEO(cat);
-    updateCTA(cat);
-
-    // 애니메이션 종료 후 상태 정리 및 락 해제
-    setTimeout(()=>{
-      front.classList.remove('front');
-      back .classList.add('front');
-      if(reduce){
-        front.style.opacity='';
-        back.style.opacity='';
+      // 요약
+      if (summaryEl) {
+        if (p.summary) summaryEl.textContent = p.summary;
+        else summaryEl.remove();
       }
-      H.cur = idx;   // 현재 인덱스 갱신
-      H.lock = false;
-    }, (reduce ? 220 : H.SLIDE_MS) + 20);
-  }
 
-  /* -------------------------------------------------------------------
-     8. 초기 상태 읽기(readInitial)
-        - URL 해시 / 쿼리 / 세션 저장값에서 슬러그를 찾아
-          첫 진입 시 보여줄 카테고리를 결정
-  ------------------------------------------------------------------- */
-  function readInitial(){
-    // 우선순위: 해시 > 쿼리 파라미터 > 세션스토리지
-    let slug = null;
+      // 이미지
+      if (imgEl) {
+        if (p.image) {
+          imgEl.src = p.image;
+        } else {
+          imgEl.src = 'https://placehold.co/600x600/cccccc/777777?text=NAVI+TOUR';
+        }
+      }
 
-    // 1) location.hash에서 cat=슬러그 또는 슬러그 단독 형태 지원
-    if(location.hash){
-      const h = location.hash.replace(/^#/, '');
-      const m = h.match(/cat=([a-z0-9_-]+)/i) ||
-                h.match(/^([a-z0-9_-]+)$/i);
-      if(m) slug = m[1];
-    }
+      // 기간
+      var termLabel = formatPeriod(p.nights, p.days);
+      if (termEl) termEl.textContent = termLabel;
 
-    // 2) 쿼리 파라미터 ?cat=... 또는 세션 히스토리
-    if(!slug){
-      try{
-        const u = new URL(location.href);
-        slug = u.searchParams.get('cat') ||
-               sessionStorage.getItem('heroCat');
-      }catch(e){}
-    }
+      // 가격: 최소~최대
+      if (priceEl) {
+        var minVal   = p.priceMin || p.price;
+        var maxVal   = p.priceMax;
+        var minSpan  = priceEl.querySelector('.min');
+        var midSpan  = priceEl.querySelector('.mid');
+        var maxSpan  = priceEl.querySelector('.max');
 
-    // 3) 못 찾으면 0번(전체)로 폴백
-    const idx = Math.max(0, H.cats.findIndex(c=>c.slug===slug));
-    const cat = H.cats[idx] || H.cats[0];
+        var minLabel = formatKRWPlain(minVal);
+        var maxLabel = formatKRWPlain(maxVal);
 
-    // CSS 변수로 CTA 색상 초기화
-    setVar('--cta1', cat.theme.cta1);
-    setVar('--cta2', cat.theme.cta2);
+        if (minSpan) minSpan.textContent = minLabel;
+        if (midSpan) midSpan.textContent = (minLabel && maxLabel) ? '~' : '';
+        if (maxSpan) maxSpan.textContent = maxLabel;
 
-    // 텍스트 초기화
-    const title = $('#heroTitle');
-    const sub   = $('#heroSub');
-    if(title) title.textContent = cat.t;
-    if(sub)   sub.textContent   = cat.s;
-
-    // 슬라이드 초기 위치(전환 애니 없이 바로 세팅)
-    const A = $('#slideA'), B = $('#slideB');
-    if(A && B){
-      setSlideBg(A, getHeroImg(cat));
-      A.style.transition='none';
-      B.style.transition='none';
-      A.style.transform='translateX(0)';
-      B.style.transform='translateX(100%)';
-    }
-
-    H.cur = idx;
-    updateSEO(cat);
-    updateCTA(cat);
-
-    // 칩 is-active/aria-pressed 초기 세팅
-    const row = $('#chipRow');
-    if(row){
-      $all('.chip', row).forEach(x=>{
-        const active = (parseInt(x.dataset.idx||'0',10)===idx);
-        x.classList.toggle('is-active', active);
-        x.setAttribute('aria-pressed', active ? 'true' : 'false');
-      });
-    }
-  }
-
-  /* -------------------------------------------------------------------
-     9. 이벤트 바인딩(bind)
-        - 칩 클릭, 리사이즈 시 레이아웃 보정
-  ------------------------------------------------------------------- */
-  function bind(){
-    const row = $('#chipRow');
-    if(!row) return;
-
-    // 칩 클릭 시 해당 인덱스로 전환
-    row.addEventListener('click', e=>{
-      const btn = e.target.closest('.chip');
-      if(!btn || H.lock) return;
-      const idx  = parseInt(btn.dataset.idx||'0',10) || 0;
-      go(idx, btn);
-    });
-
-    // 초기 위치/스크롤 여부 계산
-    stickAtHeroBottom();
-    toggleEdgeFades();
-
-    // 리사이즈 때마다 다시 계산 + 현재 카테고리 배너 이미지도 재적용
-    window.addEventListener('resize', ()=>{
-      stickAtHeroBottom();
-      toggleEdgeFades();
-
-      const cat   = H.cats[H.cur] || H.cats[0];
-      const img   = getHeroImg(cat);
-      const front = document.querySelector('.slide.front');
-      const back  = document.querySelector('.slide:not(.front)');
-      if(front && img) setSlideBg(front, img);
-      if(back  && img) setSlideBg(back, img);
-
-      updateSEO(cat);
-    });
-  }
-
-  /* -------------------------------------------------------------------
-     10. DOM 주입 대기 및 초기화(mountWhenReady)
-         - 헤더/배너가 fetch로 나중에 주입되는 케이스까지 대응
-  ------------------------------------------------------------------- */
-  function mountWhenReady(){
-    // 필요한 요소들이 모두 준비됐는지 체크하는 내부 함수
-    const tryMount = ()=>{
-      const ready = (
-        $('.chipbar') &&
-        $('#slideA') &&
-        $('#slideB') &&
-        $('#chipRow')
-      );
-      if(ready){
-        readInitial();
-        bind();
-        // 카테고리별 이미지 미리 로드(전환 시 깜빡임 줄이기)
-        H.cats.forEach(c=>{
-          if(c.img){
-            const im = new Image();
-            im.src = c.img;
+        if (!minSpan && !maxSpan) {
+          if (minLabel && maxLabel) {
+            priceEl.textContent = minLabel + ' ~ ' + maxLabel;
+          } else {
+            priceEl.textContent = minLabel || maxLabel || '';
           }
-          if(c.imgNote){
-            const im2 = new Image();
-            im2.src = c.imgNote;
-          }
+        }
+      }
+
+      // 테마 + 태그
+      if (tagsWrap) {
+        tagsWrap.innerHTML = '';
+        if (p.theme) {
+          var tSpan = document.createElement('span');
+          tSpan.textContent = p.theme;
+          tagsWrap.appendChild(tSpan);
+        }
+        var tagList = splitTags(p.tags);
+        tagList.forEach(function (tag) {
+          var s = document.createElement('span');
+          s.textContent = '#' + tag;
+          tagsWrap.appendChild(s);
         });
-        return true;
       }
-      return false;
-    };
 
-    // DOM에 이미 다 올라와 있으면 바로 초기화
-    if(tryMount()) return;
-
-    // 아니면 DOM 변경을 감시했다가 준비되면 초기화
-    const mo = new MutationObserver(()=>{
-      if(tryMount()){
-        mo.disconnect();
+      // 답사지 (Q열, 쉼표로 분리, 해시 없이 박스)
+      if (sitesWrap) {
+        sitesWrap.innerHTML = '';
+        var siteList = splitSites(p.sites);
+        if (siteList.length) {
+          siteList.forEach(function (site) {
+            var s = document.createElement('span');
+            s.textContent = site;
+            sitesWrap.appendChild(s);
+          });
+        } else {
+          // 답사지 없으면 영역 숨김
+          sitesWrap.style.display = 'none';
+        }
       }
+
+      // 디테일 데이터(화면에는 안 펼치지만 채워두기는 함)
+      var descP   = detailTr.querySelector('.prod-desc');
+      var metaP   = detailTr.querySelector('.prod-meta');
+      var locP    = detailTr.querySelector('.prod-location');
+      var linkEl  = detailTr.querySelector('.prod-detail-link');
+
+      if (descP) {
+        if (p.description) descP.textContent = p.description;
+        else descP.remove();
+      }
+
+      if (metaP) {
+        var parts = [];
+        if (p.minPax) {
+          parts.push('출발 인원: ' + p.minPax + '명 이상');
+        }
+        if (p.route || p.finishroute) {
+          if (p.route && p.finishroute) {
+            parts.push('코스: ' + p.route + ' → ' + p.finishroute);
+          } else {
+            parts.push('코스: ' + (p.route || p.finishroute));
+          }
+        }
+        if (parts.length) metaP.textContent = parts.join('   ·   ');
+        else metaP.remove();
+      }
+
+      if (locP) {
+        if (p.location) locP.textContent = '주요 방문지: ' + p.location;
+        else locP.remove();
+      }
+
+      // 상세페이지 URL: D열 address 우선, 없으면 slug 기반
+      var detailUrl = '';
+      if (p.address) {
+        detailUrl = p.address;
+      } else if (p.slug) {
+        detailUrl = buildDetailHref(p.slug);
+      }
+
+      if (linkEl) {
+        if (detailUrl) {
+          linkEl.href = detailUrl;
+        } else {
+          linkEl.remove();
+        }
+      }
+
+      // 버튼: 상세페이지로 바로 이동
+      if (btn) {
+        if (detailUrl) {
+          btn.addEventListener('click', function () {
+            window.location.href = detailUrl;
+          });
+        } else {
+          btn.disabled = true;
+        }
+      }
+
+      tbody.appendChild(mainTr);
+      // detailTr는 여전히 append하지만 display:none
+      tbody.appendChild(detailTr);
     });
-    mo.observe(document.documentElement, {childList:true, subtree:true});
   }
 
-  /* -------------------------------------------------------------------
-     11. hashchange 핸들러
-         - 외부에서 location.hash = "cat=..." 으로 바꿨을 때도
-           히어로 상태를 동기화하기 위한 리스너
-  ------------------------------------------------------------------- */
-  window.addEventListener('hashchange', ()=>{
-    const h = location.hash.replace(/^#/,'');
+  /* -------------------------------------------------------
+     8. 테이블 슬롯 초기화
+  ------------------------------------------------------- */
+  async function initTables() {
+    await ensureRowTemplates();
 
-    // cat=슬러그 / 슬러그 단독 두 가지 패턴 지원
-    const m = h.match(/cat=([a-z0-9_-]+)/i) ||
-              h.match(/^([a-z0-9_-]+)$/i);
-    if(!m) return;
+    var slots = Array.prototype.slice.call(
+      document.querySelectorAll(
+        '[data-product-sheet][data-product-region]'
+      )
+    );
+    if (!slots.length) return;
 
-    const slug = m[1];
-    const idx = H.cats.findIndex(c=>c.slug===slug);
-    if(idx<0 || idx===H.cur) return;
+    var bySheet = new Map();
+    slots.forEach(function (el) {
+      var key = el.dataset.productSheet;
+      if (!bySheet.has(key)) bySheet.set(key, []);
+      bySheet.get(key).push(el);
+    });
 
-    const btn = document.querySelector('.chip[data-idx="'+idx+'"]');
-    go(idx, btn);
+    for (var entry of bySheet.entries()) {
+      var sheetKey = entry[0];
+      var elements = entry[1];
+
+      var table = null;
+      try {
+        table = await fetchTable(sheetKey);
+      } catch (err) {
+        console.error(
+          '[ProductSheetLoader] 시트 불러오기 실패:',
+          sheetKey,
+          err
+        );
+        continue;
+      }
+
+      elements.forEach(function (el) {
+        var regionKey = el.dataset.productRegion || '';
+        var products = extractProducts(table, regionKey);
+        renderProducts(el, products);
+      });
+    }
+  }
+
+  /* -------------------------------------------------------
+     9. 카드 모드
+  ------------------------------------------------------- */
+  const CAT_CARD_CONFIG = {
+    sgando: { sheets: ['china'],  region: '서간도'   },
+    bgando: { sheets: ['china'],  region: '북간도'   },
+    gov:    { sheets: ['china'],  region: '임시정부' },
+    jpn:    { sheets: ['japan'],  region: '도쿄'     },
+    fareast:{ sheets: ['russia'], region: ''        },
+    hawaii: { sheets: ['usa'],    region: ''        }
+  };
+
+  // ★ 여기서 카드 HTML을 Main_Card.css 구조에 맞춰 생성
+  function buildCardHTML(p) {
+    var nightsTxt = p.nights ? p.nights + '박' : '';
+    var daysTxt   = p.days   ? ' ' + p.days + '일' : '';
+    var termOnly  = (nightsTxt || daysTxt) ? (nightsTxt + daysTxt) : '';
+    var termText;
+
+    if (p.region && termOnly) termText = p.region + ' · ' + termOnly;
+    else if (p.region)        termText = p.region;
+    else                      termText = termOnly;
+
+    // 로케이션 → tags/tag 스타일
+    var locBlock = '';
+    if (p.location) {
+      locBlock =
+        '<div class="tags">' +
+          '<span class="tag">' +
+            '<i class="fa-solid fa-location-dot"></i>' +
+            '주요 방문지: ' + p.location +
+          '</span>' +
+        '</div>';
+    }
+
+    // 썸네일
+    var imgSrc = p.image || 'https://placehold.co/640x400/111111/ffffff?text=NAVI+TOUR';
+
+    // 상세페이지 링크: D열 address 우선, 없으면 slug 기반
+    var detailHref = p.address || (p.slug ? buildDetailHref(p.slug) : '#');
+
+    // 예약문의 페이지 (고정)
+    var contactHref = 'Support/Contact.html';
+
+    return ''
+      + '<article class="card">'
+      + '  <div class="thumb">'
+      + '    <img src="' + imgSrc + '" alt="상품 이미지"/>'
+      + '  </div>'
+      + '  <div class="body">'
+      + '    <h3>' + (p.title || '') + '</h3>'
+      +      (p.summary ? '    <p>' + p.summary + '</p>' : '')
+      +        locBlock
+      + '    <div class="actions">'
+      + '      <div class="actions-term">' + (termText || '') + '</div>'
+      + '      <div class="actions-buttons">'
+      + '        <a class="btn-ghost" href="' + detailHref + '">상세 보기</a>'
+      + '      </div>'
+      + '    </div>'
+      + '  </div>'
+      + '</article>';
+  }
+
+
+  function renderProductCards(slot, products) {
+    if (!products || !products.length) {
+      slot.innerHTML =
+        '<div class="card-empty" style="padding:24px 12px; text-align:center; color:#999; font-size:.9rem;">준비 중인 상품입니다.</div>';
+      return;
+    }
+    slot.innerHTML = products.map(buildCardHTML).join('');
+  }
+
+  async function initCardSlots(root, catKey) {
+    var base = root || document;
+    var slots = Array.prototype.slice.call(
+      base.querySelectorAll('[data-product-cards]')
+    );
+    if (!slots.length) return;
+
+    var cfg = catKey && CAT_CARD_CONFIG[catKey];
+
+    if (cfg) {
+      for (var i = 0; i < slots.length; i++) {
+        var el = slots[i];
+        var allProducts = [];
+
+        for (var j = 0; j < cfg.sheets.length; j++) {
+          var sheetKey = cfg.sheets[j];
+          var table;
+          try {
+            table = await fetchTable(sheetKey);
+          } catch (err) {
+            console.error('[ProductSheetLoader] 카드용 시트 불러오기 실패:', sheetKey, err);
+            continue;
+          }
+          var prods = extractProducts(table, cfg.region || '');
+          allProducts = allProducts.concat(prods);
+        }
+
+        allProducts.sort(function (a, b) {
+          return a.priority - b.priority;
+        });
+
+        renderProductCards(el, allProducts);
+      }
+      return;
+    }
+
+    var sheetTables = new Map();
+
+    async function getTableLocal(sheetKey) {
+      if (sheetTables.has(sheetKey)) return sheetTables.get(sheetKey);
+      var t = await fetchTable(sheetKey);
+      sheetTables.set(sheetKey, t);
+      return t;
+    }
+
+    for (var i2 = 0; i2 < slots.length; i2++) {
+      var el2 = slots[i2];
+      var raw = el2.dataset.productCards || '';
+      var keys = raw.split(',').map(function (k) { return k.trim(); }).filter(Boolean);
+      if (!keys.length) continue;
+
+      var regionKey = el2.dataset.productRegion || '';
+      var all = [];
+
+      for (var j2 = 0; j2 < keys.length; j2++) {
+        var sk = keys[j2];
+        var t2;
+        try {
+          t2 = await getTableLocal(sk);
+        } catch (err2) {
+          console.error('[ProductSheetLoader] 카드용(일반) 시트 불러오기 실패:', sk, err2);
+          continue;
+        }
+        var ps = extractProducts(t2, regionKey);
+        all = all.concat(ps);
+      }
+
+      all.sort(function (a, b) {
+        return a.priority - b.priority;
+      });
+
+      renderProductCards(el2, all);
+    }
+  }
+
+  /* -------------------------------------------------------
+     10. 초기 실행
+  ------------------------------------------------------- */
+  function prewarmSheets() {
+    Object.keys(SHEETS).forEach(function (key) {
+      fetchTable(key).catch(function(){});
+    });
+  }
+
+  function bootAll(rootForCards) {
+    var hasTableSlots = document.querySelector('[data-product-sheet][data-product-region]');
+    var hasCardSlots  = document.querySelector('[data-product-cards]');
+    if (!hasTableSlots && !hasCardSlots) {
+      return;
+    }
+    prewarmSheets();
+    initTables();
+    initCardSlots(rootForCards);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      bootAll();
+    });
+  } else {
+    bootAll();
+  }
+
+  document.addEventListener('navitour:cards-container-mounted', function (e) {
+    var root = e && e.detail && e.detail.root;
+    var cat  = e && e.detail && e.detail.cat;
+    initCardSlots(root, cat);
   });
 
-  /* -------------------------------------------------------------------
-     12. DOMContentLoaded 시점에 모듈 시동
-         - 문서 로딩 상태에 따라 바로 실행하거나 이벤트로 대기
-  ------------------------------------------------------------------- */
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', mountWhenReady, {once:true});
-  }else{
-    mountWhenReady();
+  /* -------------------------------------------------------
+     11. 공용 API
+  ------------------------------------------------------- */
+  function findProductInTable(table, slug) {
+    if (!table || !slug) return null;
+    var rows = table.rows || [];
+    var target = String(slug || '').trim();
+    if (!target) return null;
+
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var c = row.c || [];
+      var rowSlug = String(getCell(c, COL.slug) || '').trim();
+      if (!rowSlug) continue;
+      if (rowSlug === target) {
+        return mapRowToProduct(row);
+      }
+    }
+    return null;
   }
 
-  /* -------------------------------------------------------------------
-     13. 외부 공개 API
-         - window.NT_HERO.go(idx, 버튼) : 강제 전환
-         - window.NT_HERO.mount()       : 수동 재마운트
-  ------------------------------------------------------------------- */
-  window.NT_HERO = { go, mount: mountWhenReady };
+  async function getProductBySlug(sheetKey, slug) {
+    var table = await fetchTable(sheetKey);
+    if (!table) return null;
+    return findProductInTable(table, slug);
+  }
+
+  window.NaviProd = window.NaviProd || {};
+  window.NaviProd.SHEETS = SHEETS;
+  window.NaviProd.COL = COL;
+  window.NaviProd.getTable = fetchTable;
+  window.NaviProd.extractProducts = extractProducts;
+  window.NaviProd.getProductBySlug = getProductBySlug;
+  window.NaviProd.findProductInTable = findProductInTable;
+  window.NaviProd.formatPrice = formatPrice;
+  window.NaviProd.formatPriceRange = formatPriceRange;
+  window.NaviProd.formatPeriod = formatPeriod;
+
 })();
