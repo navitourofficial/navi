@@ -1,0 +1,463 @@
+/* PATH: /Comp/Header.css :: FULL REPLACE */
+
+/* =========================================================
+   NAVI TOUR – Header.css
+   PC: 일반 드롭다운 + 중앙 메가 메뉴
+   Mobile: 2줄 헤더 + 팝업형 드롭다운
+========================================================= */
+
+/* 1. 기본 토큰 */
+:root{
+  --bg:#f5f5f7;
+  --panel:#FFFFFF;
+  --ink:#2B2B2B;
+  --muted:#7A7A7A;
+  --gold:#C9A86A;
+  --line:#EAE3D8;
+  --line-2:#F1EAE0;
+  --shadow:0 20px 60px rgba(0,0,0,.08);
+  --radius:18px;
+  --maxw:1180px;
+  --mega-w:920px;
+
+  --hero-h:41vh;
+  --chip-h:44px;
+  --chip-offset:54px;
+  --rail-pad:10px;
+  --card-ratio:1.141;
+  --edge-eq:24px;
+
+  --header-h:44px;
+  --head-bg:#000000;
+  --drop-bg-1: rgba(12,16,22,.94);
+  --drop-bg-2: rgba(12,16,22,.86);
+
+  --ctaOutline: rgba(255,255,255,.65);
+  --ctaHover:   rgba(255,255,255,.14);
+  --ctaActive:  rgba(255,255,255,.20);
+}
+
+/* 2. 리셋 */
+*{ box-sizing:border-box; }
+
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  background:
+    radial-gradient(140% 180% at 50% 0%,
+      #fbfbfd 0%,
+      #f7f7fa 40%,
+      #f5f5f7 70%,
+      #f1f2f4 100%);
+  color:var(--ink);
+  font:12px/1.65 "Noto Sans KR",system-ui,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+a{ color:inherit; text-decoration:none; }
+
+img{ display:block; max-width:100%; }
+
+.wrap{
+  max-width:var(--maxw);
+  margin-inline:auto;
+  padding-inline:22px;
+}
+
+.wrap.edge{
+  padding-left:calc(22px + var(--edge-eq));
+  padding-right:calc(22px + var(--edge-eq));
+}
+
+/* 3. HEADER 공통 */
+header.site-head{ --head-line: rgba(0, 0, 0, 0.18); }
+
+header.site-head{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  border-bottom:1px solid var(--head-line);
+  background:var(--head-bg);
+  color:#fff;
+  backdrop-filter:saturate(120%) blur(6px);
+  -webkit-backdrop-filter:saturate(120%) blur(6px);
+}
+
+/* 4. 헤더 레이아웃 (flex) */
+.head-row{
+  position:relative;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:16px;
+  padding:8px 0;
+}
+
+/* 5. 로고 */
+.brand{
+  order:1;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding:0 10px 0 0;
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  text-decoration:none;
+  min-height:var(--header-h);
+  flex:0 0 auto;
+}
+
+.brand img{
+  display:block;
+  height:40px;
+  width:auto;
+}
+
+.brand:hover{
+  background:rgba(255,255,255,.04);
+}
+
+/* 6. PC 중앙 탭 */
+.tabs-desktop{
+  order:2;
+  flex:1 1 auto;
+  display:flex;
+  align-items:stretch;
+  justify-content:center;
+  gap:0;
+}
+
+/* 모바일 탭 기본 숨김 */
+.tabs-mobile{
+  order:4;
+  width:100%;
+  display:none;
+}
+
+/* 7. 우측 메뉴 */
+.head-right{
+  order:3;
+  flex:0 0 auto;
+  display:flex;
+  align-items:stretch;
+  gap:0;
+}
+
+/* 8. 탭 버튼 */
+.nav-item{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:var(--header-h);
+  padding:0 18px;
+  font-weight:600;
+  letter-spacing:.01em;
+  color:#EEE;
+  text-decoration:none;
+  line-height:1;
+  white-space:nowrap;
+  transition:background .15s ease, opacity .15s ease;
+}
+
+.nav-item:hover{ background:rgba(255,255,255,.06); }
+
+.nav-item:active{ background:rgba(255,255,255,.12); }
+
+.nav-item::after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:3px;
+  background:var(--gold, #C9A86A);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .22s ease;
+}
+
+.nav-item:hover::after,
+.nav-item:focus-visible::after{
+  transform:scaleX(1);
+}
+
+/* 9. 드롭다운 공통 (PC 기본) */
+.site-head .dropdown{
+  position:relative;
+  display:flex;
+  align-items:stretch;
+}
+
+/* 기본: 안 보이게 */
+.site-head .dropdown-menu{
+  position:absolute;
+  top:100%;
+  left:0;
+  margin-top:4px;
+
+  background:linear-gradient(180deg, var(--drop-bg-1), var(--drop-bg-2));
+  border:1px solid rgba(15,23,42,.55);
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
+  padding:8px 10px;
+  border-radius:4px;
+
+  width:max-content;
+  max-width:calc(100vw - 40px);
+  white-space:nowrap;
+
+  z-index:900;
+
+  display:none;
+}
+
+/* hover / focus 시 표시 */
+.site-head .dropdown:hover > .dropdown-menu,
+.site-head .dropdown:focus-within > .dropdown-menu{
+  display:block;
+}
+
+/* 드롭다운 항목 */
+.site-head .subitem{
+  display:block;
+  padding:8px 12px;
+  color:#EEF1F8;
+  font-weight:600;
+  letter-spacing:.01em;
+  text-shadow:0 0 1px rgba(0,0,0,.2);
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.site-head .subitem:hover{
+  background:rgba(255,255,255,.10);
+}
+
+/* 10. 메가 메뉴 (전체) – PC: 화면 기준 중앙, 고정 오버레이 */
+.site-head .mega-host{
+  position:relative;
+}
+
+.site-head .mega-host > .dropdown-menu.mega{
+  position:fixed;
+  top:calc(var(--header-h) + 12px); /* 헤더 바로 아래 대략 위치 */
+  left:calc(max(20px, (100vw - var(--mega-w)) / 2));
+  right:calc(max(20px, (100vw - var(--mega-w)) / 2));
+  margin-top:0;
+
+  min-width:auto;
+  width:auto;
+  max-width:var(--mega-w);
+
+  white-space:normal;
+
+  display:none;
+  padding:12px 14px;
+
+  grid-template-columns:repeat(4, minmax(160px, 1fr));
+  gap:12px 16px;
+  z-index:950;
+}
+
+/* hover 시 grid로 표시 */
+.site-head .mega-host:hover > .dropdown-menu.mega,
+.site-head .mega-host:focus-within > .dropdown-menu.mega{
+  display:grid;
+}
+
+.site-head .mega-col h4{
+  margin:0 0 6px;
+  font-size:11px;
+  letter-spacing:.08em;
+  color:var(--muted, #A7A7B5);
+  text-transform:uppercase;
+}
+
+.site-head .mega-sep{
+  border:none;
+  height:1px;
+  background:rgba(148,163,184,.6);
+  margin:10px 0;
+}
+
+.site-head .dropdown-menu.mega .subitem{
+  padding:8px 10px;
+  font-size:11px;
+}
+
+/* 11. 오른쪽 메뉴 폰트 */
+.head-right .nav-item{
+  font-size:11px;
+}
+
+/* 12. 900px 이하 패딩 축소 */
+@media (max-width:900px){
+  .nav-item{
+    padding:0 14px;
+    font-size:11px;
+  }
+}
+
+/* =========================================================
+   13. 모바일(720px 이하)
+   - 1줄: 로고 + 오른쪽 메뉴
+   - 2줄: tabs-mobile (전체/중국/일본/미국/러시아)
+   - 드롭다운: 탭 밖, 화면에 떠 있는 팝업
+========================================================= */
+@media (max-width:720px){
+
+  header.site-head{
+    --head-line: rgba(15,23,42,.35);
+    border-bottom:1px solid rgba(15,23,42,.5);
+  }
+
+  .head-row{
+    padding:6px 0 4px;
+  }
+
+  /* 1행: 로고 + 오른쪽 메뉴 */
+  .brand{
+    order:1;
+    padding-right:8px;
+  }
+
+  .brand img{
+    height:30px;
+  }
+
+  .head-right{
+    order:2;
+    margin-left:auto;
+    gap:4px;
+  }
+
+  .head-right .nav-item{
+    min-height:32px;
+    padding:0 6px;
+    font-size:11px;
+  }
+
+  /* PC 탭 숨김 */
+  .tabs-desktop{
+    display:none;
+  }
+
+  /* 2행: 모바일 탭 (전체/중국/일본/미국/러시아) */
+  .tabs-mobile{
+    order:4;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0;
+    margin-top:4px;
+
+    border-top:1px solid rgba(148,163,184,.35);
+    border-bottom:1px solid rgba(148,163,184,.35);
+
+    overflow-x:auto;
+    overflow-y:visible;
+    -webkit-overflow-scrolling:touch;
+    position:relative;
+  }
+
+  .tabs-mobile::-webkit-scrollbar{
+    display:none;
+  }
+
+  .tabs-mobile .dropdown{
+    flex:0 0 auto;
+  }
+
+  .tabs-mobile .nav-item{
+    min-height:38px;
+    padding:0 12px;
+    font-size:13px;
+  }
+
+  /* -------------------------------
+     모바일: 드롭다운을 탭 밖, 화면 상단에 팝업처럼
+     - 페이지를 드래그할 필요 없게 fixed로 띄움
+     - 폭은 글자 길이에 맞추되 90vw 이내
+  --------------------------------- */
+
+  /* 일반 드롭다운 */
+  .site-head .tabs-mobile .dropdown-menu{
+    position:fixed;
+    top:80px;                 /* 1행+2행 합친 높이 근처 */
+    left:50%;
+    transform:translateX(-50%);
+    margin-top:0;
+
+    width:max-content;
+    max-width:90vw;
+    max-height:60vh;
+    overflow-y:auto;
+    border-radius:8px;
+    z-index:2000;
+  }
+
+  /* 메가메뉴(전체): 중앙 2열 그리드 */
+  .site-head .tabs-mobile .mega-host > .dropdown-menu.mega{
+    position:fixed;
+    top:80px;
+    left:50%;
+    transform:translateX(-50%);
+    margin-top:0;
+
+    min-width:min(100vw - 20px, var(--mega-w));
+    max-width:calc(100vw - 20px);
+    max-height:60vh;
+    overflow-y:auto;
+
+    display:none;
+    grid-template-columns:repeat(2, minmax(140px, 1fr));
+    border-radius:10px;
+  }
+
+  .site-head .tabs-mobile .mega-host:hover > .dropdown-menu.mega,
+  .site-head .tabs-mobile .mega-host:focus-within > .dropdown-menu.mega{
+    display:grid;
+  }
+}
+
+/* 14. Hero CTA 시인성 패치 (기존 유지) */
+body .hero .cta{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:12px 22px !important;
+  border-radius:12px !important;
+  font-weight:800 !important;
+  letter-spacing:.2px !important;
+  background:transparent !important;
+  color:#fff !important;
+  border:1.5px solid var(--ctaOutline) !important;
+  box-shadow:0 6px 18px rgba(0,0,0,.20) !important;
+  backdrop-filter:saturate(120%) blur(2px) !important;
+  transition:
+    background-color .18s ease,
+    border-color .18s ease,
+    transform .06s ease !important;
+}
+
+body .hero .cta:hover{
+  background:var(--ctaHover) !important;
+  border-color:rgba(255,255,255,.75) !important;
+}
+
+body .hero .cta:active{
+  background:var(--ctaActive) !important;
+  transform:translateY(1px) !important;
+}
+
+body .hero .cta:focus-visible{
+  outline:none !important;
+  box-shadow:0 0 0 2px rgba(255,255,255,.28) !important;
+}
+
+body .hero .cta.is-accent{
+  background:linear-gradient(180deg,
+              var(--cta1,#D7BB83),
+              var(--cta2,#C3A36A)) !important;
+  color:#22170A !important;
+  border:none !important;
+}

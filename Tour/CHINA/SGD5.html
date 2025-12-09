@@ -1,0 +1,368 @@
+<!-- PATH: /Tour/Prod_index.html :: FULL REPLACE -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <title>상품명 | NAVI TOUR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+  <!-- GitHub Pages용 동적 BASE (저장소 루트 기준으로 고정) -->
+  <script>
+    (function () {
+      var seg = location.pathname.split('/').filter(Boolean);
+      var base = (location.hostname.endsWith('.github.io') && seg.length > 0)
+        ? '/' + seg[0] + '/'
+        : '/';
+      var b = document.createElement('base');
+      b.setAttribute('href', base);
+      document.head.prepend(b);
+    })();
+  </script>
+
+  <!-- 메인 스타일: /Tour/Tour.css -->
+  <link rel="stylesheet" href="Tour/Tour.css"/>
+
+  <!-- 헤더 스타일: /Comp/Header.css -->
+  <link rel="stylesheet" href="Comp/Header.css"/>
+
+  <!-- 폰트 -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<!-- 상품별로 아래 data-product-* 값만 바꿔 쓰면 됨 -->
+<body data-product-sheet="china" data-product-slug="중국-서간도-압록강,두만강,해란강-6박7일-탐방">
+
+  <!-- ===== 공통 헤더 ===== -->
+  <div data-include="Comp/Header.html"></div>
+
+  <div class="page">
+
+    <!-- ===== 상단 상품 히어로 ===== -->
+    <header class="prod-hero">
+
+      <!-- 메인 이미지 / 갤러리 -->
+      <div class="hero-media">
+        <div class="media-main">
+          <!-- 루트 기준: /Image/Prod/1/main.jpg -->
+          <img src="Image/Prod/1/main.jpg" alt="상품 대표 이미지">
+
+          <!-- 좌우 네비게이션 버튼 -->
+          <div class="media-nav">
+            <button type="button" class="nav-btn prev" aria-label="이전 이미지">&#10094;</button>
+            <button type="button" class="nav-btn next" aria-label="다음 이미지">&#10095;</button>
+          </div>
+        </div>
+        <div class="media-thumbs">
+          <button type="button" class="thumb is-active">
+            <img src="Image/Prod/chn/sgando/1.png" alt="">
+          </button>
+          <button type="button" class="thumb">
+            <img src="Image/Prod/1/thumb_02.jpg" alt="">
+          </button>
+          <button type="button" class="thumb">
+            <img src="Image/Prod/1/thumb_03.jpg" alt="">
+          </button>
+          <button type="button" class="thumb">
+            <img src="Image/Prod/1/thumb_04.jpg" alt="">
+          </button>
+        </div>
+      </div>
+
+      <!-- 상품 기본 정보 -->
+      <div class="hero-info">
+        <!-- JS에서: 홈 > 나라(E) > 지역(F) 로 교체 -->
+        <div class="crumb">홈 &gt; 테마기행 &gt; 상품 카테고리</div>
+
+        <div class="title-wrap">
+          <!-- JS에서: G열(타이틀) -->
+          <h1 class="title">[지역명] 상품 타이틀이 들어가는 영역 (최대 두 줄 추천)</h1>
+          <!-- JS에서: H열(간략설명) -->
+          <p class="subtitle">간단한 한 줄 설명 문구. 핵심 키워드 2~3개 정도 정리.</p>
+        </div>
+
+        <div class="info-grid">
+          <dl>
+            <dt>여행 기간</dt>
+            <!-- JS: J/K열 → "박 일" 포맷 -->
+            <dd>3박 4일</dd>
+          </dl>
+          <dl>
+            <dt>출발 가능 인원</dt>
+            <!-- JS: L열 → "최소 n인" -->
+            <dd>최소 8인 ~ 최대 20인</dd>
+          </dl>
+          <dl>
+            <dt>테마</dt>
+            <!-- JS: Q열(테마) -->
+            <dd>역사 기행 / 수학여행 / 청년부 수련회</dd>
+          </dl>
+          <dl>
+            <dt>태그</dt>
+            <!-- JS: R열(태그) -->
+            <dd>북간도 · 독립운동 · 역사교육</dd>
+          </dl>
+        </div>
+
+        <!-- 로케이션: 한 줄 전체 사용 (O열) -->
+        <p class="hero-location">
+          <strong>로케이션</strong>
+          중국 지린성 일대 (용정 · 명동촌 · 봉오동 등)
+        </p>
+
+        <div class="price-box">
+          <div class="price-left">
+            <span class="label">1인 기준 예상가 (최소~최대)</span>
+            <div class="price">
+              <!-- JS: S/T열 → "₩ 1,090,000 ~ 1,590,000" -->
+              <span class="num">₩ 1,090,000 ~ 1,590,000</span>
+            </div>
+            <p class="price-note">상담 내용과 인원, 일정에 따라 최종 금액이 달라질 수 있습니다.</p>
+          </div>
+          <div class="price-right">
+          </div>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- ===== 섹션 탭 (앵커 이동) ===== -->
+    <nav class="section-tabs">
+      <ul>
+        <li><a href="#summary" class="tab is-active">기본 정보</a></li>
+        <li><a href="#schedule" class="tab">상세 일정</a></li>
+        <li><a href="#include" class="tab">포함 / 불포함</a></li>
+        <li><a href="#notice" class="tab">이용 안내</a></li>
+        <li><a href="#review" class="tab">후기</a></li>
+      </ul>
+    </nav>
+
+    <!-- ===== 본문 + 오른쪽 예약 박스 ===== -->
+    <div class="page-body">
+
+      <!-- ===== 메인 본문 영역 ===== -->
+      <main class="main-col">
+
+        <!-- 기본 정보 요약 (공통 → JS에서 주입) -->
+        <section id="summary" class="section"></section>
+
+        <!-- 상품 설명 & 답사지 카드 (시트 + 상품별 약간 수정 가능) -->
+        <section id="desc" class="section">
+          <div class="desc-card">
+            <h3 class="desc-title">상품 설명</h3>
+            <!-- JS: I열 (상세설명) -->
+            <p class="desc-text">상품의 상세한 설명을 입력하는 영역입니다.</p>
+
+            <h3 class="desc-title">답사지</h3>
+            <!-- JS: P열 (답사지) -->
+            <p class="desc-text">이 코스에서 방문하는 주요 답사지를 정리하는 영역입니다.</p>
+          </div>
+        </section>
+
+        <!-- 상세 일정 (여기부터는 상품별로 직접 작성) -->
+        <section id="schedule" class="section">
+          <h2 class="section-title">상세 일정(예시)</h2>
+          <p class="section-lead">
+            실제 일정은 단체의 목적, 인원, 이동 시간에 따라 조정됩니다.
+            아래는 3박 4일 기준 예시 일정입니다.
+          </p>
+
+          <!-- DAY 1 -->
+          <article class="day-card">
+            <div class="day-label">DAY 1</div>
+            <div class="day-body">
+              <h3>인천 · 다렌 · 뤼순 · 단동</h3>
+              <ul class="day-list">
+                <li>인천공항 집결, 수속 후 다렌행 출발</li>
+                <li>다렌공항 도착, 입국 수속 및 가이드 미팅</li>
+                <li>뤼순으로 이동</li>
+                <li>뤼순감옥, 뤼순관동법원 답사</li>
+                <li>뤼순역, 뤼순항 일대 역사 현장 답사</li>
+                <li>저녁식사 후 단동으로 이동(약 4시간)</li>
+                <li>단동 도착, 호텔 체크인 및 숙박</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DAY 2 -->
+          <article class="day-card">
+            <div class="day-label">DAY 2</div>
+            <div class="day-body">
+              <h3>압록강 일대 · 장전하구 · 집안</h3>
+              <ul class="day-list">
+                <li>조식 후 출발, 압록강 철교 방문</li>
+                <li>위화도 조망 및 압록강 일대 설명</li>
+                <li>이륭양행(임시정부 교통국) 답사 후 장전하구로 이동</li>
+                <li>청성단교, 압록강 유람선 탑승, 모안닝 동상 조망</li>
+                <li>점심 식사 후 관전 청산구로 이동(약 1.5시간)</li>
+                <li>이진룡 장군 기념원, 환인 노학당터 답사</li>
+                <li>고구려 2대 수도 집안 도착, 저녁 식사 및 호텔 투숙</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DAY 3 -->
+          <article class="day-card">
+            <div class="day-label">DAY 3</div>
+            <div class="day-body">
+              <h3>오녀산성 · 왕청문 · 통화 · 국내성</h3>
+              <ul class="day-list">
+                <li>조식 후 출발, 오녀산성박물관 및 하고성자 답사</li>
+                <li>왕청문으로 이동, 양세봉 기념원 방문</li>
+                <li>남만학교터, 국민부 본부터, 양세봉 승전지 일대 답사</li>
+                <li>점심식사 후 통화 방향으로 이동</li>
+                <li>통화 배달학교 7의사 묘 참배</li>
+                <li>집안으로 이동(약 2시간), 집안(국내성) 도착</li>
+                <li>국내성 도보 답사 후 저녁 식사, 호텔 투숙</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DAY 4 -->
+          <article class="day-card">
+            <div class="day-label">DAY 4</div>
+            <div class="day-body">
+              <h3>국내성 심층 답사 · 삼원보 · 송강하</h3>
+              <ul class="day-list">
+                <li>조식 후 출발, 환도산성 답사</li>
+                <li>통구하 고분군 탐방</li>
+                <li>광개토태왕비, 광개토태왕릉, 장수왕릉 답사</li>
+                <li>점심식사 후 삼원보 방향으로 이동(약 2시간)</li>
+                <li>삼원보(신흥강습소), 삼원보조선족자치진, 동명학교터 조망</li>
+                <li>광화로 이동, 합니하(신흥중학교) 답사</li>
+                <li>송강하로 이동(약 2.5시간), 저녁식사 후 호텔 숙박</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DAY 5 -->
+          <article class="day-card">
+            <div class="day-label">DAY 5</div>
+            <div class="day-body">
+              <h3>백두산 서파 · 청산리 · 연길</h3>
+              <ul class="day-list">
+                <li>조식 후 출발, 백두산 서파 향해 이동</li>
+                <li>백두산 서파 산문 도착, 서파 등정</li>
+                <li>청석봉에서 천지 조망, 능선 분석, 37호 국경비</li>
+                <li>동양의 그랜드캐년 금강대협곡, 고산화원 탐방</li>
+                <li>점심식사 후 화룡으로 이동(약 3시간)</li>
+                <li>청산리대첩 전투지 일원 답사</li>
+                <li>연길 도착, 저녁식사 및 부루하통하 산책 후 호텔 숙박</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DAY 6 -->
+          <article class="day-card">
+            <div class="day-label">DAY 6</div>
+            <div class="day-body">
+              <h3>용정 · 일송정 · 도문 · 연길</h3>
+              <ul class="day-list">
+                <li>조식 후 출발, 용정으로 이동</li>
+                <li>서전서숙, 명동촌, 명동학교, 제창병원, 은진학교 답사</li>
+                <li>15만 탈취기념비, 3.13 만세운동 순국자 묘역 참배</li>
+                <li>점심식사 후 일송정으로 이동</li>
+                <li>일송정, 비얌산, 해란강 일대 답사</li>
+                <li>도문으로 이동(약 2시간), 한반도 북쪽 끝·두만강 방향 남쪽 전환 지점 및 봉오동대첩 관련 지역 답사</li>
+                <li>연길 귀환, 저녁식사 후 호텔 투숙 및 동북아비전포럼</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DAY 7 -->
+          <article class="day-card">
+            <div class="day-label">DAY 7</div>
+            <div class="day-body">
+              <h3>연길공항 · 인천</h3>
+              <ul class="day-list">
+                <li>조식 후 출발</li>
+                <li>연길공항으로 이동</li>
+                <li>출국 수속</li>
+                <li>연길공항 출발</li>
+                <li>인천공항 도착</li>
+                <li>입국 수속</li>
+                <li>짐 찾고 해단식</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DAY 8 (기본 숨김) -->
+          <article class="day-card hide">
+            <div class="day-label">DAY 8</div>
+            <div class="day-body">
+              <h3></h3>
+              <ul class="day-list">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+          </article>
+        </section>
+
+        <!-- 포함 / 불포함 (공통 → JS에서 주입) -->
+        <section id="include" class="section two-col"></section>
+
+        <!-- 이용 안내 / 유의 사항 (공통 → JS에서 주입) -->
+        <section id="notice" class="section"></section>
+
+        <!-- 후기 영역: 사진 상자 3개 (상품별로 직접 교체 / 기본 숨김) -->
+        <section id="review" class="section hide">
+          <h2 class="section-title">여행 후기</h2>
+          <p class="section-lead">이 상품으로 다녀온 단체들의 현장 사진과 후기를 모았습니다.</p>
+
+          <div class="review-grid">
+            <!-- 후기 1 -->
+            <article class="review-item">
+              <div class="review-media">
+                <img src="Image/Review/1.jpg" alt="여행 후기 사진 1">
+                <a href="review/sample-01.html" class="review-btn">후기 보기</a>
+              </div>
+            </article>
+
+            <!-- 후기 2 -->
+            <article class="review-item">
+              <div class="review-media">
+                <img src="Image/Review/2.jpg" alt="여행 후기 사진 2">
+                <a href="review/sample-02.html" class="review-btn">후기 보기</a>
+              </div>
+            </article>
+
+            <!-- 후기 3 -->
+            <article class="review-item">
+              <div class="review-media">
+                <img src="Image/Review/3.jpg" alt="여행 후기 사진 3">
+                <a href="review/sample-03.html" class="review-btn">후기 보기</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ===== 오른쪽 컬럼: 문의 & 예약 상담만 include로 로드 ===== -->
+      <aside class="side-col">
+        <div data-include="Tour/Tour_Receipt.html"></div>
+      </aside>
+    </div>
+
+  </div>
+
+  <!-- ===== 페이지 하단 CTA (공통 컴포넌트) ===== -->
+  <section class="page-cta">
+    <div data-include="Comp/Receipt.html"></div>
+  </section>
+
+  <!-- ===== 공통 푸터 ===== -->
+  <div data-include="Comp/Footer.html"></div>
+
+  <!-- 공용 시트 로더 (NaviProd) -->
+  <script src="Js/ProductSheetLoader.js"></script>
+
+  <!-- 상세페이지 공통 스크립트 (갤러리 / include / 시트 데이터 주입 / 공통 섹션) -->
+  <script src="Tour/Tour.js"></script>
+</body>
+</html>

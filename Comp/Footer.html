@@ -1,0 +1,154 @@
+<!-- PATH: /Comp/Footer.html :: FULL FILE -->
+<footer class="nt-footer">
+  <div class="nt-footer-inner">
+
+    <!-- 1) 중앙 로고 영역 -->
+    <div class="nt-footer-logo-row">
+      <!-- 클릭 시 메인으로 이동 (필요하면 href 수정) -->
+      <a href="index.html" class="nt-footer-logo-link" aria-label="NAVI TOUR 메인으로 이동">
+        <img src="Image/Logo/3.png"
+             alt="NAVI TOUR 로고"
+             class="nt-footer-logo">
+      </a>
+    </div>
+
+    <!-- 2) 하단 정보 영역 -->
+    <div class="nt-footer-meta">
+      <div class="nt-footer-contact">
+        <span>여행 문의 010-8334-0923</span>
+        <span>이메일 navi_tour@naver.com</span>
+        <span>카카오 채널 @navitour</span>
+      </div>
+      <p class="nt-footer-company">
+        상호: 희망날개 | 사업자등록번호: 270-17-02279 | 주소: 인천광역시 남동구 구월남로 118, 8층 802호<br>
+      </p>
+      <p class="nt-footer-copy">
+        © NAVI TOUR. All rights reserved.
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .nt-footer{
+    background:#050608;
+    color:#f9fafb;
+    width:100%;
+  }
+
+  .nt-footer-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:16px 16px 26px;
+  }
+
+  /* 중앙 로고 영역: 세로/가로 정확히 중앙 */
+  .nt-footer-logo-row{
+    min-height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .nt-footer-logo-link{
+    position:relative;
+    display:inline-block;
+    overflow:hidden;         /* 하이라이트가 로고 박스 밖으로 안 나가게 */
+  }
+
+  .nt-footer-logo{
+    height:90px;
+    width:auto;
+    display:block;
+  }
+
+  /* ================================
+     로고 반사(샤인) 효과
+     ================================ */
+  .nt-footer-logo-link::before{
+    content:"";
+    position:absolute;
+    top:-60%;
+    left:-130%;
+    width:220%;
+    height:220%;
+    pointer-events:none;
+    opacity:0;
+    background:linear-gradient(
+      135deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.0) 30%,
+      rgba(255,255,255,0.35) 50%,
+      rgba(255,255,255,0.0) 70%,
+      rgba(255,255,255,0) 100%
+    );
+    transform:translateX(0);
+  }
+
+  .nt-footer-logo-link:hover::before{
+    animation:nt-footer-logo-shine .9s ease-out;
+    opacity:1;
+  }
+
+  @keyframes nt-footer-logo-shine{
+    0%{
+      transform:translateX(0);
+      opacity:0;
+    }
+    15%{
+      opacity:1;
+    }
+    100%{
+      transform:translateX(130%);
+      opacity:0;
+    }
+  }
+
+  /* 하단 정보 영역 */
+  .nt-footer-meta{
+    border-top:1px solid rgba(148,163,184,.35);
+    padding-top:14px;
+    text-align:center;
+    font-size:11.5px;
+    color:#9ca3af;
+  }
+
+  .nt-footer-contact{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px 18px;
+    font-size:12px;
+    margin-bottom:6px;
+    color:#e5e7eb;
+  }
+
+  .nt-footer-company{
+    margin:2px 0 4px;
+    line-height:1.5;
+  }
+
+  .nt-footer-copy{
+    margin:0;
+    color:#6b7280;
+    font-size:11px;
+  }
+
+  /* 반응형: 모바일에서 로고 크게 + 여백 최소화 */
+  @media (max-width:768px){
+    .nt-footer-inner{
+      padding:14px 12px 18px;   /* 위/아래 패딩 축소 */
+    }
+    .nt-footer-logo-row{
+      min-height:auto;          /* 고정 높이 제거 */
+      padding:4px 0 2px;        /* 로고 주변 여백 최소화 */
+    }
+    .nt-footer-logo{
+      height:44px;              /* 로고 자체 크게 (세로 확대 → 가로도 같이 커짐) */
+    }
+    .nt-footer-company{
+      font-size:11px;
+    }
+  }
+</style>

@@ -1,0 +1,326 @@
+<!-- PATH: /Prod/Prod_index.html :: FULL FILE -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <title>상품 상세 | NAVI TOUR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+  <!-- 메인 스타일 -->
+  <link rel="stylesheet" href="Prod.css"/>
+
+  <!-- 폰트 -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- ===== 상단 상품 히어로 ===== -->
+    <header class="prod-hero">
+
+      <!-- 메인 이미지 / 갤러리 -->
+      <div class="hero-media">
+        <div class="media-main">
+          <!-- 기본 대표 이미지 (상품별로 변경) -->
+          <img src="../Image/Prod/1/main.jpg" alt="상품 대표 이미지">
+
+          <!-- 좌우 네비게이션 버튼 -->
+          <div class="media-nav">
+            <button type="button" class="nav-btn prev" aria-label="이전 이미지">&#10094;</button>
+            <button type="button" class="nav-btn next" aria-label="다음 이미지">&#10095;</button>
+          </div>
+        </div>
+        <div class="media-thumbs">
+          <button type="button" class="thumb is-active">
+            <img src="../Image/Prod/1/thumb_01.jpg" alt="">
+          </button>
+          <button type="button" class="thumb">
+            <img src="../Image/Prod/1/thumb_02.jpg" alt="">
+          </button>
+          <button type="button" class="thumb">
+            <img src="../Image/Prod/1/thumb_03.jpg" alt="">
+          </button>
+          <button type="button" class="thumb">
+            <img src="../Image/Prod/1/thumb_04.jpg" alt="">
+          </button>
+        </div>
+      </div>
+
+      <!-- 상품 기본 정보 -->
+      <div class="hero-info">
+        <div class="crumb"></div>
+
+        <div class="title-wrap">
+          <h1 class="title"></h1>
+          <p class="subtitle"></p>
+        </div>
+
+        <div class="info-grid">
+          <dl>
+            <dt>여행 기간</dt>
+            <dd></dd>
+          </dl>
+          <dl>
+            <dt>출발 가능 인원</dt>
+            <dd></dd>
+          </dl>
+          <dl>
+            <dt>출발 공항</dt>
+            <dd></dd>
+          </dl>
+          <dl>
+            <dt>포함 사항</dt>
+            <dd></dd>
+          </dl>
+        </div>
+
+        <div class="price-box">
+          <div class="price-left">
+            <span class="label">1인 기준 예상가</span>
+            <div class="price">
+              <span class="num"></span>
+              <span class="unit"></span>
+            </div>
+            <p class="price-note"></p>
+          </div>
+          <div class="price-right">
+            <button type="button" class="btn primary">맞춤 견적 요청</button>
+          </div>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- ===== 섹션 탭 (앵커 이동) ===== -->
+    <nav class="section-tabs">
+      <ul>
+        <li><a href="#summary" class="tab is-active">기본 정보</a></li>
+        <li><a href="#schedule" class="tab">상세 일정</a></li>
+        <li><a href="#include" class="tab">포함 / 불포함</a></li>
+        <li><a href="#notice" class="tab">이용 안내</a></li>
+        <li><a href="#review" class="tab">후기</a></li>
+      </ul>
+    </nav>
+
+    <!-- ===== 본문 + 오른쪽 예약 박스 ===== -->
+    <div class="page-body">
+
+      <!-- ===== 메인 본문 영역 ===== -->
+      <main class="main-col">
+
+        <!-- 기본 정보 요약 -->
+        <section id="summary" class="section">
+          <h2 class="section-title">여행 기본 정보</h2>
+          <div class="info-card">
+            <table class="info-table">
+              <tbody>
+                <tr>
+                  <th>여행 형태</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>권장 시즌</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>숙박 기준</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>이동 수단</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>해설 &amp; 진행</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>최종 일정</th>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 상세 일정 -->
+        <section id="schedule" class="section">
+          <h2 class="section-title">상세 일정(예시)</h2>
+          <p class="section-lead"></p>
+
+          <article class="day-card">
+            <div class="day-label">DAY 1</div>
+            <div class="day-body">
+              <h3></h3>
+              <ul class="day-list">
+              </ul>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-label">DAY 2</div>
+            <div class="day-body">
+              <h3></h3>
+              <ul class="day-list">
+              </ul>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-label">DAY 3</div>
+            <div class="day-body">
+              <h3></h3>
+              <ul class="day-list">
+              </ul>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-label">DAY 4</div>
+            <div class="day-body">
+              <h3></h3>
+              <ul class="day-list">
+              </ul>
+            </div>
+          </article>
+        </section>
+
+        <!-- 포함 / 불포함 -->
+        <section id="include" class="section two-col">
+          <div>
+            <h2 class="section-title">포함 사항</h2>
+            <ul class="bullet-list">
+            </ul>
+          </div>
+          <div>
+            <h2 class="section-title">불포함 사항</h2>
+            <ul class="bullet-list">
+            </ul>
+          </div>
+        </section>
+
+        <!-- 이용 안내 / 유의 사항 -->
+        <section id="notice" class="section">
+          <h2 class="section-title">이용 안내 및 유의 사항</h2>
+          <div class="notice-card">
+            <h3></h3>
+            <ul class="bullet-list"></ul>
+
+            <h3></h3>
+            <ul class="bullet-list"></ul>
+
+            <h3></h3>
+            <ul class="bullet-list"></ul>
+          </div>
+        </section>
+
+        <!-- 후기 영역: 사진 상자 3개 -->
+        <section id="review" class="section">
+          <h2 class="section-title">여행 후기</h2>
+          <p class="section-lead"></p>
+
+          <div class="review-grid">
+            <article class="review-item">
+              <div class="review-media">
+                <img src="../Image/Review/1.jpg" alt="여행 후기 사진 1">
+                <a href="#" class="review-btn">후기 보기</a>
+              </div>
+            </article>
+
+            <article class="review-item">
+              <div class="review-media">
+                <img src="../Image/Review/2.jpg" alt="여행 후기 사진 2">
+                <a href="#" class="review-btn">후기 보기</a>
+              </div>
+            </article>
+
+            <article class="review-item">
+              <div class="review-media">
+                <img src="../Image/Review/3.jpg" alt="여행 후기 사진 3">
+                <a href="#" class="review-btn">후기 보기</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ===== 오른쪽 컬럼: 문의 & 예약 상담 include ===== -->
+      <aside class="side-col">
+        <div data-include="Prod_Receipt.html"></div>
+      </aside>
+    </div>
+
+  </div>
+
+  <!-- 히어로 갤러리 스크립트 -->
+  <script>
+    (function(){
+      var hero = document.querySelector('.prod-hero');
+      if(!hero) return;
+
+      var mainImg = hero.querySelector('.media-main img');
+      var thumbs = Array.prototype.slice.call(
+        hero.querySelectorAll('.media-thumbs .thumb')
+      );
+      if(!mainImg || !thumbs.length) return;
+
+      var sources = thumbs.map(function(btn){
+        var img = btn.querySelector('img');
+        return img ? img.getAttribute('src') : null;
+      }).filter(Boolean);
+
+      var idx = 0;
+
+      function setIndex(i){
+        if(!sources.length) return;
+        idx = (i + sources.length) % sources.length;
+        mainImg.src = sources[idx];
+        thumbs.forEach(function(btn, bi){
+          btn.classList.toggle('is-active', bi === idx);
+        });
+      }
+
+      thumbs.forEach(function(btn, bi){
+        btn.addEventListener('click', function(){
+          setIndex(bi);
+        });
+      });
+
+      var prevBtn = hero.querySelector('.media-nav .prev');
+      var nextBtn = hero.querySelector('.media-nav .next');
+
+      if(prevBtn){
+        prevBtn.addEventListener('click', function(){
+          setIndex(idx - 1);
+        });
+      }
+      if(nextBtn){
+        nextBtn.addEventListener('click', function(){
+          setIndex(idx + 1);
+        });
+      }
+
+      var initial = sources.indexOf(mainImg.getAttribute('src'));
+      if(initial >= 0) idx = initial;
+      setIndex(idx);
+    })();
+  </script>
+
+  <!-- include 로더 (문의 & 예약 상담) -->
+  <script>
+    (function(){
+      var targets = document.querySelectorAll('[data-include]');
+      targets.forEach(function(el){
+        var url = el.getAttribute('data-include');
+        if(!url) return;
+        fetch(url)
+          .then(function(res){ return res.text(); })
+          .then(function(html){ el.innerHTML = html; })
+          .catch(function(err){ console.error('include error:', url, err); });
+      });
+    })();
+  </script>
+</body>
+</html>

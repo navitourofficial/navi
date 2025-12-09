@@ -1,0 +1,408 @@
+<!-- PATH: /Main/Main_Mission.html :: FULL REPLACE -->
+<style>
+  /* =========================================================
+     NAVI TOUR – Main_Mission (나비투어 미션/철학 타임라인 섹션)
+  ========================================================= */
+
+  /* ---------------------------------
+     1. 섹션 공통 래퍼
+  ---------------------------------- */
+  .nt-mission-inner{
+    max-width:960px;
+    margin:0 auto;
+    padding:20px 34px 20px;
+  }
+
+  .nt-mission-eyebrow{
+    font:500 11px/1.4 "Noto Sans KR",sans-serif;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:10px;
+    text-align:center;
+  }
+
+  .nt-mission-title{
+    margin:0 0 10px;
+    font:800 32px/1.3 "Playfair Display","Noto Sans KR",serif;
+    text-align:center;
+  }
+
+  .nt-mission-lead{
+    margin:0 auto 24px;
+    font-size:14px;
+    color:var(--muted);
+    max-width:640px;
+    text-align:center;
+  }
+
+  /* ---------------------------------
+     2. 타임라인 레이아웃
+  ---------------------------------- */
+  .nt-mission-timeline{
+    position:relative;
+    margin-top:10px;
+    padding-left:28px;
+  }
+
+  .nt-mission-timeline::before{
+    content:"";
+    position:absolute;
+    left:11px;
+    top:0;
+    bottom:0;
+    width:2px;
+    background:linear-gradient(to bottom,#D8CBB6,#F1E6D4);
+  }
+
+  .nt-mission-step{
+    position:relative;
+    padding-bottom:26px;
+  }
+  .nt-mission-step:last-child{
+    padding-bottom:0;
+  }
+
+  .nt-mission-step-marker{
+    position:absolute;
+    left:-1px;
+    top:4px;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#fff;
+    border:3px solid var(--gold);
+    box-shadow:0 0 0 4px rgba(201,168,106,.22);
+  }
+
+  /* ---------------------------------
+     3. 스텝 카드 공통 스타일
+  ---------------------------------- */
+  .nt-mission-step-body{
+    background:#FBF7EF;
+    border-radius:20px;
+    padding:14px 16px 14px;
+    border:1px solid #EFE1CE;
+  }
+
+  .nt-mission-step-label{
+    font-size:11px;
+    font-weight:600;
+    color:var(--gold);
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+
+  .nt-mission-step-title{
+    margin:0 0 6px;
+    font-size:17px;
+  }
+
+  .nt-mission-step-subtitle{
+    margin:8px 0 4px;
+    font-size:15px;
+  }
+
+  .nt-mission-step-body p{
+    margin:0 0 6px;
+    font-size:13px;
+    color:#444;
+  }
+
+  .nt-mission-step-body ul{
+    margin:4px 0 0 18px;
+    padding:0;
+    font-size:13px;
+    color:#444;
+  }
+  .nt-mission-step-body li{
+    margin-bottom:3px;
+  }
+
+  /* 소제목(굵은 글씨)을 한 줄 내려서 보이게 */
+  .nt-mission-step-body li strong{
+    display:block;
+    margin-bottom:2px;
+  }
+
+  /* ---------------------------------
+     4. (예비) 다크 톤 약속 카드
+  ---------------------------------- */
+  .nt-mission-promise-card{
+    margin-top:32px;
+    border-radius:24px;
+    border:1px solid var(--line);
+    background:#1F2933;
+    color:#F9FAFB;
+    padding:20px 20px 18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .nt-mission-promise-card::before{
+    content:"";
+    position:absolute;
+    inset:-40%;
+    background:
+      radial-gradient(circle at 10% 0%,rgba(255,255,255,.09) 0,transparent 55%),
+      radial-gradient(circle at 90% 120%,rgba(201,168,106,.2) 0,transparent 60%);
+    opacity:.9;
+    pointer-events:none;
+  }
+  .nt-mission-promise-inner{
+    position:relative;
+    z-index:1;
+  }
+  .nt-mission-promise-label{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:rgba(249,250,251,.65);
+    margin-bottom:6px;
+  }
+  .nt-mission-promise-title{
+    margin:0 0 10px;
+    font-size:18px;
+  }
+  .nt-mission-promise-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px 24px;
+    margin-top:10px;
+  }
+  .nt-mission-promise-item h3{
+    margin:0 0 4px;
+    font-size:14px;
+    color:#FDFDFE;
+  }
+  .nt-mission-promise-item p{
+    margin:0;
+    font-size:13px;
+    color:#E5E7EB;
+  }
+  .nt-mission-signature{
+    margin-top:18px;
+    font-size:12px;
+    color:#D1D5DB;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .nt-mission-signature strong{
+    color:#F9FAFB;
+  }
+
+  /* ---------------------------------
+     5. 반응형: 모바일(720px 이하) 조정
+     - 모바일에서 동그라미/라인/박스 제거 + 여백 축소
+  ---------------------------------- */
+  @media (max-width:720px){
+    /* 패널 안에서 카드가 꽉 차게 + 위아래 여백 축소 */
+    .nt-mission-inner{
+      padding:16px 12px 18px;
+    }
+
+    .nt-mission-title{
+      font-size:24px;
+      margin-bottom:6px;
+    }
+    .nt-mission-lead{
+      margin-bottom:16px;
+      font-size:13px;
+    }
+
+    /* 라인 + 마커 제거, 왼쪽 여백도 제거 */
+    .nt-mission-timeline{
+      margin-top:4px;
+      padding-left:0;
+    }
+    .nt-mission-timeline::before{
+      display:none;
+    }
+    .nt-mission-step-marker{
+      display:none;
+    }
+
+    /* 스텝 간 간격/카드 패딩 조정 */
+    .nt-mission-step{
+      padding-bottom:14px;
+    }
+    .nt-mission-step:last-child{
+      padding-bottom:0;
+    }
+
+    /* 모바일에서 STEP 1~4 박스 배경/테두리 제거 */
+    .nt-mission-step-body{
+      background:transparent;
+      border:none;
+      border-radius:0;
+      padding:6px 0 8px;
+    }
+
+    .nt-mission-step-title{
+      font-size:16px;
+      margin-bottom:4px;
+    }
+    .nt-mission-step-subtitle{
+      font-size:14px;
+      margin:6px 0 3px;
+    }
+    .nt-mission-step-body p,
+    .nt-mission-step-body ul{
+      font-size:12px;
+    }
+
+    .nt-mission-promise-card{
+      margin-top:20px;
+      padding:14px 12px 14px;
+      border-radius:18px;
+    }
+    .nt-mission-promise-grid{
+      grid-template-columns:1fr;
+      gap:10px 0;
+    }
+  }
+</style>
+
+<section class="nt-section nt-mission">
+  <div class="nt-panel">
+    <div class="nt-mission-inner">
+      <header>
+        <div class="nt-mission-eyebrow">ABOUT NAVI TOUR</div>
+        <h2 class="nt-mission-title">나비투어, 어떤 여정을 약속하는가</h2>
+        <p class="nt-mission-lead">
+          나비투어의 모든 상품은 네 단계의 여정을 따라 설계됩니다.
+          역사의 현장에서 출발해 오늘의 삶으로 이어지고, 여행이 끝난 후에도 비전과 약속으로 계속 이어집니다.
+        </p>
+      </header>
+
+      <section class="nt-mission-timeline" aria-label="나비투어 철학 타임라인">
+
+        <article class="nt-mission-step">
+          <div class="nt-mission-step-marker"></div>
+          <div class="nt-mission-step-body">
+            <div class="nt-mission-step-label">STEP 01 · CORE VALUE</div>
+            <h3 class="nt-mission-step-title">나비투어의 핵심 가치</h3>
+            <p><strong>역사의 현장에서 미래를 꿈꾸는 여행</strong></p>
+            <p>
+              진정한 여행은 나를 찾고 길을 찾는 여정입니다. 시간과 공간을 뛰어넘는 소통의 과정입니다.
+              좋은 소통의 열매는 성찰과 반성과 새로운 관계 맺기입니다.
+              나비투어는 ‘삶을 재창조하는 여행’을 지향합니다.
+              나비투어의 모든 상품들은 역사의 현장에서 과거와 소통하며 미래를 위한 가치를 찾는 여행입니다.
+              꿈과 비전을 캐내는 ‘창의적 인문기행’입니다.
+            </p>
+          </div>
+        </article>
+
+        <article class="nt-mission-step">
+          <div class="nt-mission-step-marker"></div>
+          <div class="nt-mission-step-body">
+            <div class="nt-mission-step-label">STEP 02 · MISSION</div>
+            <h3 class="nt-mission-step-title">나비투어의 방향 – 세 가지 여행</h3>
+
+            <h4 class="nt-mission-step-subtitle">1. 역사에게 길을 묻는 여행</h4>
+            <p>
+              단순 단답식 의미 전달 과정이 아니라, 깊이 있는 역사의 맥락 속에서 필연을 찾는 여행입니다.
+              사건·공간·인물을 함께 읽으며 그들이 걸었던 길들과 삶에 대해 의문을 제기하고,
+              나와 우리에게도 질문하는 여행입니다. 역사에게 길을 묻고 미래의 가치를 찾아나가는 여행입니다.
+            </p>
+
+            <h4 class="nt-mission-step-subtitle">2. 역사의 현장과 오늘의 삶의 현장을 잇는 여행</h4>
+            <p>
+              ‘압록강이 오늘 우리와 어떤 관계가 있을까?’ ‘두만강은 우리에게, 백두산은 우리에게 무슨 의미가 있을까?’
+              이러한 질문들은 실제 공간과 사람을 만나며 오늘의 질문으로 가져옵니다.
+              여정 중 나눈 대화가 교실·가정·회의실의 이야기로 자연스럽게 이어지도록 돕습니다.
+            </p>
+
+            <h4 class="nt-mission-step-subtitle">3. 비전을 회복하는 여행</h4>
+            <p>
+              나를 찾는 여행의 유익은 비전 회복에 있습니다. 꿈과 비전은 삶을 재창조하는 동력입니다.
+              여행을 통해 형성된 감동과 열정과 꿈이 지속가능할 수 있도록 서로 만나고 학습하고
+              네트워킹 할 수 있는 플랫폼을 제공해 드립니다.
+            </p>
+          </div>
+        </article>
+
+        <article class="nt-mission-step">
+          <div class="nt-mission-step-marker"></div>
+          <div class="nt-mission-step-body">
+            <div class="nt-mission-step-label">STEP 03 · CHARACTERISTICS</div>
+            <h3 class="nt-mission-step-title">나비투어의 특색 – 여행의 방식</h3>
+            <ul>
+              <li>
+                <strong>가성비 높은 생산적 여행</strong>
+                진정한 여행은 소비로 끝나지 않습니다.
+                투자 효과 뛰어난 생산적 활동입니다. 지적 함양, 정서적 치유와 회복, 꿈과 비전의 재창조는
+                천문학적 투자로도 쉽게 거둘 수 없는 가치입니다. 나비투어는 유쾌하고 재미있는 진행,
+                명쾌하고 탁월한 해설과 강의, 인문적 감성과 생태적 감성의 고양, 세계시민으로서의 자질 함양,
+                리더십 고취 등을 통해 재충전의 기회를 드리는 여행을 만들어 드립니다.
+              </li>
+              <li>
+                <strong>재미있고 유익하고 유쾌한 여행</strong>
+                여행의 준비에서부터 OT, 티켓팅, 행정서비스,
+                공항집결, 차량, 식사, 숙소, 기사, 현지 가이드 등 여행의 제반 요소들은 부드럽고 물흐르듯 진행됩니다.
+                아는 만큼 보이기 때문에 출발 전 OT를 통해 배경지식과 정보를 제공받고,
+                보다 적극적으로 참여할 수 있도록 준비합니다. 단순한 공간 이동이 아니라,
+                창의적으로 찾고 탐구하며 주체적으로 움직이고, 협력하기 때문에 즐겁고 유익할 수밖에 없습니다.
+                따라서 즐거움과 만족도가 올라가는 유쾌한 여행이 됩니다.
+              </li>
+              <li>
+                <strong>전문 교수진의 탁월한 해설과 강의</strong>
+                한국독립운동사의 명망있는 교수진이 해설과 강의를 진행합니다.
+                나비투어는 탐방 전 OT를 제공할 뿐 아니라, 필독서 안내, 해당 지역에 자료 제공 등으로 충분한 마중물을 준비시키고,
+                역사 현장에 대한 지도 제공 등을 통해 입체적으로 이해할 수 있도록 돕습니다.
+                산흐름과 물흐름, 도로와 철도, 유적과 유물 등에 대해 쉽고 재미있게 체계적으로 안내해드립니다.
+                특히 이동 중 차량 안에서 특강이나 퀴즈 등을 통하여 의미 재구성을 체계적으로 도와드립니다.
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="nt-mission-step">
+          <div class="nt-mission-step-marker"></div>
+          <div class="nt-mission-step-body">
+            <div class="nt-mission-step-label">STEP 04 · COMMITMENT</div>
+            <h3 class="nt-mission-step-title">나비투어의 약속</h3>
+            <ul>
+              <li>
+                <strong>01. 안전과 품격을 제1의 가치로 여깁니다.</strong>
+                안전과 안정성을 바탕으로 한 품격 있는 여행을 제공합니다. 항공, 출국 및 입국, 차량, 이동 동선,
+                숙소, 식사, 보험에 이르기까지 여행의 모든 과정은 수많은 리스크를 내포하고 있습니다.
+                나비투어는 전체 일정에서부터 세세한 현장에 이르기까지 항상 안전하고 쾌적한 분위기를 유지합니다.
+                또한 모든 조건들을 교육·인문기행에 최적화되도록 구성합니다.
+                “값싼 관광”이 아니라, 신뢰할 수 있는 품격형 프로그램을 지향합니다.
+              </li>
+              <li>
+                <strong>02. 불필요한 쇼핑이나 옵션이 없습니다.</strong>
+                여행 과정에서 강요되는 쇼핑들과 옵션은 불필요한 지출을 증가시키고, 분위기를 냉각시키며,
+                불쾌감이 끝날 때까지 지속되는 문제를 가져옵니다. 더 큰 문제는 금쪽같은 시간을 낭비하게 함으로써
+                여행의 진정한 주인이 될 수 없게 된다는 점입니다. 나비투어는
+                ‘나와 공동체의 자기 발견을 향한 여정’을 목표로 하기에, 고객의 품격과 자존감을 잘 지켜드릴 것입니다.
+                고객에게 꼭 필요한 쇼핑은 대형마트나 재래시장을 통하여 문화체험·현장체험이 될 수 있도록 도와드리겠습니다.
+              </li>
+              <li>
+                <strong>03. 고객들의 기억과 학습과 교육을 도와드립니다.</strong>
+                여행을 다녀온 후에 사진이나 동영상들을 잘 공유할 수 있도록 돕고,
+                건강한 커뮤니티 형성과 유지를 위해 노력하겠습니다.
+                나비투어와 함께 하신 분들은 대한민국과 우리 민족을 사랑하는 분들입니다.
+                따라서 한 분 한 분이 여행을 통해 습득한 정보나 콘텐츠를 잘 활용하셔서
+                독립운동의 현장을 보존하고 지키는 운동과 캠페인이 확장되도록 돕겠습니다.
+                고객님들이 여행을 통해 회복된 ‘자기 발견과 꿈의 재창조’가 현실에서 전개되도록 지원하겠습니다.
+              </li>
+              <li>
+                <strong>04. 다음 세대와의 약속을 지킵니다.</strong>
+                대한민국독립운동 유적지나 고구려 문화유산, 발해나 부여의 문화유산들은 매우 중요한 정신적 물질적 자산입니다.
+                “나라를 잃은 민족은 되찾을 수 있지만, 역사를 잃은 민족은 다시 설 수 없다.”는 신채호 선생님의 말씀처럼,
+                소중한 역사를 다음세대에게 전하는 일은 우리 모두의 사명일 수 있습니다.
+                ‘역사의 현장에서 캐낸 미래 가치를 다음세대에게 전하는 일’에 나비투어가 함께 하겠습니다.
+                청소년과 청년, 어린이와 시니어에 이르기까지 서로 소통할 수 있도록 여행을 설계하겠습니다.
+              </li>
+            </ul>
+          </div>
+        </article>
+      </section>
+    </div>
+  </div>
+</section>

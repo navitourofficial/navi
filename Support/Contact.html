@@ -1,0 +1,580 @@
+<!-- PATH: /contact.html :: FULL REPLACE -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>여행 문의 | NAVI TOUR</title>
+
+  <!-- GitHub Pages용 동적 BASE -->
+  <script>
+    (function () {
+      const seg = location.pathname.split('/').filter(Boolean);
+      const base = (location.hostname.endsWith('.github.io') && seg.length > 0)
+        ? '/' + seg[0] + '/'
+        : '/';
+      const b = document.createElement('base');
+      b.setAttribute('href', base);
+      document.head.prepend(b);
+    })();
+  </script>
+
+  <!-- 폰트 & 아이콘 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- 전역 스타일 -->
+  <link rel="stylesheet" href="css/Style.css">
+
+  <style>
+    :target{ scroll-margin-top:88px; }
+
+    main.contact-page{
+      padding:45px 0 60px;
+    }
+
+    .contact-shell{
+      max-width:1100px;
+      margin:0 auto 28px;
+      padding:32px 32px 34px;
+      border-radius:32px;
+      background:#f5f5f7;
+      box-shadow:
+        0 18px 60px rgba(0,0,0,.18),
+        0 0 0 1px rgba(0,0,0,.02);
+      color:#111827;
+    }
+
+    .contact-head{
+      text-align:center;
+      margin-bottom:24px;
+      max-width:720px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .contact-kicker{
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:#9ca3af;
+      margin-bottom:6px;
+    }
+
+    .contact-title{
+      margin:0 0 8px;
+      font-size:26px;
+      font-weight:700;
+    }
+
+    .contact-lead{
+      margin:0;
+      font-size:14px;
+      line-height:1.8;
+      color:#4b5563;
+    }
+
+    .contact-lead strong{
+      font-weight:600;
+      color:#111827;
+    }
+
+    .contact-meta{
+      margin-top:10px;
+      font-size:12.5px;
+      color:#6b7280;
+    }
+
+    .contact-meta i{
+      margin-right:6px;
+      color:#9ca3af;
+    }
+
+    /* 폼 전체 레이아웃 */
+    .contact-form-wrap{
+      margin-top:26px;
+      background:#ffffff;
+      border-radius:24px;
+      border:1px solid #e5e7eb;
+      padding:22px 22px 24px;
+    }
+
+    .contact-grid{
+      display:grid;
+      grid-template-columns: minmax(0,1.05fr) minmax(0,1.05fr);
+      gap:20px 24px;
+    }
+
+    .contact-block-title{
+      margin:0 0 10px;
+      font-size:15px;
+      font-weight:600;
+      color:#111827;
+    }
+
+    .contact-block-desc{
+      margin:0 0 14px;
+      font-size:12.5px;
+      color:#6b7280;
+    }
+
+    .field-row{
+      display:flex;
+      gap:12px;
+    }
+
+    .field{
+      flex:1;
+      margin-bottom:10px;
+    }
+
+    .field-label{
+      display:block;
+      margin-bottom:4px;
+      font-size:12px;
+      font-weight:600;
+      color:#4b5563;
+    }
+
+    .field-label span.required{
+      color:#ef4444;
+      margin-left:3px;
+    }
+
+    .field-control{
+      width:100%;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      padding:7px 9px;
+      font-size:13px;
+      line-height:1.5;
+      outline:none;
+      background:#ffffff;
+      color:#111827;
+      transition:
+        border-color .16s ease,
+        box-shadow .16s ease,
+        background-color .16s ease;
+    }
+
+    .field-control:focus{
+      border-color:#111827;
+      box-shadow:0 0 0 1px rgba(0,0,0,.7);
+      background:#ffffff;
+    }
+
+    textarea.field-control{
+      resize:vertical;
+      min-height:90px;
+    }
+
+    /* placeholder 글씨 크기 ↓ */
+    .field-control::placeholder{
+      font-size:11px;
+      color:#9ca3af;
+    }
+    textarea.field-control::placeholder{
+      font-size:11px;
+    }
+
+    .field-hint{
+      margin-top:3px;
+      font-size:11px;
+      color:#9ca3af;
+    }
+
+    /* 하단 전체 폭 영역 */
+    .contact-wide{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: minmax(0,1fr);
+      gap:10px;
+    }
+
+    /* 개인정보 동의 */
+    .contact-consent{
+      margin-top:8px;
+      padding-top:10px;
+      border-top:1px dashed #e5e7eb;
+      font-size:12px;
+      color:#4b5563;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px 14px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+
+    .contact-consent-left{
+      display:flex;
+      align-items:flex-start;
+      gap:6px;
+    }
+
+    .contact-consent-left input{
+      margin-top:2px;
+    }
+
+    .contact-consent a{
+      color:#4b7bec;
+      text-decoration:none;
+      font-size:11.5px;
+    }
+
+    .contact-consent a:hover{
+      text-decoration:underline;
+    }
+
+    /* 제출 버튼 */
+    .contact-submit{
+      border:0;
+      border-radius:999px;
+      padding:9px 22px;
+      font-size:13px;
+      font-weight:600;
+      cursor:pointer;
+      background:#111827;
+      color:#f9fafb;
+      box-shadow:0 10px 26px rgba(0,0,0,.35);
+      transition:
+        background-color .18s ease,
+        transform .16s ease,
+        box-shadow .18s ease;
+    }
+
+    .contact-submit:hover{
+      background:#020617;
+      transform:translateY(-1px);
+      box-shadow:0 16px 40px rgba(0,0,0,.42);
+    }
+
+    .contact-submit:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      box-shadow:none;
+      transform:none;
+    }
+
+    .contact-note{
+      font-size:11.5px;
+      color:#6b7280;
+    }
+
+    .contact-note strong{
+      font-weight:600;
+      color:#111827;
+    }
+
+    /* ===== 하단 SLA 박스(폼 바깥, 퀵 상담 위) ===== */
+    .contact-sla-wrap{
+      max-width:1040px;
+      margin:0 auto 40px;
+    }
+
+    .contact-side{
+      padding:12px 16px 10px;
+      border-radius:16px;
+      background:#ffffff;
+      border:1px dashed #e5e7eb;
+      font-size:12.5px;
+      color:#4b5563;
+    }
+
+    .contact-side strong{
+      font-weight:600;
+      color:#111827;
+    }
+
+    .contact-side ul{
+      margin:6px 0 4px;
+      padding-left:16px;
+      list-style:disc;
+    }
+
+    .contact-side li+li{
+      margin-top:2px;
+    }
+
+    .contact-side-foot{
+      margin-top:4px;
+      font-size:11.5px;
+      color:#6b7280;
+    }
+
+    /* 태블릿 이하 기본 조정 */
+    @media (max-width:900px){
+      .contact-shell{
+        margin:0 16px 26px;
+        padding:24px 18px 26px;
+        border-radius:26px;
+      }
+      .contact-form-wrap{
+        padding:18px 14px 20px;
+        border-radius:20px;
+      }
+      .contact-grid{
+        grid-template-columns:minmax(0,1fr);
+      }
+      .contact-sla-wrap{
+        margin:0 16px 32px;
+      }
+    }
+
+    /* 모바일 전용: 배경 박스 제거 + 좌우 풀려면 여기서 처리 */
+    @media (max-width:768px){
+      main.contact-page{
+        padding:32px 0 42px;
+      }
+      .contact-shell{
+        max-width:none;
+        margin:0;                 /* 좌우 여백 제거 */
+        padding:24px 18px 26px;   /* 안쪽 패딩만 유지 */
+        border-radius:0;          /* 둥근 박스 느낌 제거 */
+        background:transparent;   /* 뒤에 박스 색 제거 */
+        box-shadow:none;          /* 그림자 제거 */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER (외부 주입) -->
+  <div id="site-header" data-src="Comp/Header.html"></div>
+
+  <main id="page" class="contact-page">
+    <div class="contact-shell">
+      <header class="contact-head">
+        <div class="contact-kicker">CONTACT</div>
+        <h1 class="contact-title">여행 문의 보내기</h1>
+        <p class="contact-lead">
+          아직 코스가 정해지지 않아도 괜찮습니다. “어디로, 누구와, 언제쯤”만 적어 주셔도
+          <br>나머지 설계와 일정 조율은 나비투어가 함께 고민하겠습니다.
+        </p>
+      </header>
+
+      <section class="contact-form-wrap" aria-label="여행 문의 폼">
+        <form id="navitour-contact-form" action="#" method="post" novalidate>
+          <div class="contact-grid">
+            <!-- 좌측: 단체·담당자 정보 -->
+            <div>
+              <h2 class="contact-block-title">1. 단체 · 담당자 정보</h2>
+              <p class="contact-block-desc"></p>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="phone">
+                    연락처(휴대폰) <span class="required">*</span>
+                  </label>
+                  <input id="phone" name="phone" type="tel" class="field-control"
+                         placeholder="예) 010-0000-0000" required>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="email">
+                    이메일
+                  </label>
+                  <input id="email" name="email" type="email" class="field-control"
+                         placeholder="예) info@example.com">
+                </div>
+              </div>
+            </div>
+
+            <!-- 우측: 여행 희망 정보 -->
+            <div>
+              <h2 class="contact-block-title">2. 여행 희망 정보</h2>
+              <p class="contact-block-desc"></p>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="region">
+                    관심 있는 길 / 지역 <span class="required">*</span>
+                  </label>
+                  <select id="region" name="region" class="field-control" required>
+                    <option value="sgando">서간도의 길</option>
+                    <option value="bgando">북간도의 길</option>
+                    <option value="gov">임시정부의 발자취</option>
+                    <option value="fareast">극동 연해주의 길</option>
+                    <option value="jpn">일본 내 독립운동</option>
+                    <option value="hawaii">하와이 독립운동</option>
+                    <option value="etc">기타 / 아직 미정</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="purpose">
+                    여행 목적 <span class="required">*</span>
+                  </label>
+                  <select id="purpose" name="purpose" class="field-control" required>
+                    <option value="school">수학여행 / 학교 답사</option>
+                    <option value="youth">청년/청소년 수련회</option>
+                    <option value="teacher">교사 연수</option>
+                    <option value="church">교회/공동체 기행</option>
+                    <option value="corporate">기업 연수 / 리더십 교육</option>
+                    <option value="family">가족 / 개인 기행</option>
+                    <option value="etc">기타</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="people">
+                    예상 인원 <span class="required">*</span>
+                  </label>
+                  <input id="people" name="people" type="text" class="field-control"
+                         placeholder="예) 학생 40명 + 인솔자 4명 등" required>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="age">
+                    주요 연령대
+                  </label>
+                  <select id="age" name="age" class="field-control">
+                    <option value="">선택해 주세요</option>
+                    <option value="elem">초등 고학년</option>
+                    <option value="mid">중학생</option>
+                    <option value="high">고등학생</option>
+                    <option value="college">대학생 / 청년</option>
+                    <option value="adult">성인 / 교사 / 직장인</option>
+                    <option value="mix">혼합</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 하단 넓은 필드들 -->
+          <div class="contact-wide">
+            <div class="field">
+              <label class="field-label" for="request">
+                알고 싶은 점 · 기타 요청사항
+              </label>
+              <textarea id="request" name="request" class="field-control"
+                        placeholder="진행 방식, 숙소/식사, 예배/모임 시간, 예산 관련 등 편하게 적어 주세요."></textarea>
+            </div>
+          </div>
+
+          <!-- 동의 + 버튼 -->
+          <div class="contact-consent">
+            <div class="contact-consent-left">
+              <input id="consent" type="checkbox" name="consent" required>
+              <label for="consent">
+                문의 응대를 위해 입력하신 연락처로 답변드리는 것에 동의합니다.
+              </label>
+            </div>
+
+            <button type="submit" class="contact-submit">
+              문의 보내기
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- 하단 상담 CTA + 푸터 -->
+  <div id="site-receipt" data-src="Comp/Receipt.html"></div>
+  <div id="site-footer" data-src="Comp/Footer.html"></div>
+
+  <script>
+    (function(){
+      'use strict';
+
+      /* ===== 0. Apps Script 웹앱 엔드포인트 ===== */
+      const SCRIPT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxQai3l8uCAlzDggHGrPdm_E9iY2zg7Uv9vTJNt1iiHvSSg9b_MW7UoDzZ4T2EJ0CnI/exec';
+
+      /* ===== 1. 공용 조각 로더 ===== */
+      function loadFragment(id, defaultSrc, onLoaded){
+        const host = document.getElementById(id);
+        if (!host) return;
+        const src = host.getAttribute('data-src') || defaultSrc;
+
+        fetch(src, { cache:'no-store' })
+          .then(function(r){
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.text();
+          })
+          .then(function(html){
+            host.outerHTML = html;
+            if (typeof onLoaded === 'function') onLoaded();
+          })
+          .catch(function(err){
+            console.error('[NAVI TOUR] fragment load failed:', id, '→', src, err);
+          });
+      }
+
+      // 공통 조각 로드
+      loadFragment('site-header',  'Comp/Header.html');
+      loadFragment('site-receipt', 'Comp/Receipt.html');
+      loadFragment('site-footer',  'Comp/Footer.html');
+
+      /* ===== 2. 문의 폼 → Apps Script 웹앱으로 POST (no-cors) ===== */
+      document.addEventListener('DOMContentLoaded', function(){
+        const form = document.getElementById('navitour-contact-form');
+        if (!form) return;
+
+        const submitBtn = form.querySelector('.contact-submit');
+        const originalText = submitBtn ? (submitBtn.dataset.originalText || submitBtn.textContent) : '';
+
+        form.addEventListener('submit', function(ev){
+          ev.preventDefault();
+
+          // 브라우저 기본 검증
+          if (!form.reportValidity()) return;
+
+          if (!form.consent.checked){
+            alert('개인정보 수집·이용에 동의해 주세요.');
+            return;
+          }
+
+          if (!SCRIPT_ENDPOINT){
+            alert('문의 전송 경로가 설정되지 않았습니다. 관리자에게 문의해 주세요.');
+            return;
+          }
+
+          if (submitBtn){
+            submitBtn.disabled = true;
+            submitBtn.textContent = '보내는 중...';
+          }
+
+          const formData = new FormData(form);
+          const payload = {};
+          formData.forEach(function(value, key){
+            payload[key] = value;
+          });
+
+          payload._meta = {
+            url: window.location.href,
+            userAgent: navigator.userAgent,
+            submittedAt: new Date().toISOString()
+          };
+
+          // CORS 신경 안 쓰고 그냥 쏘는 방식
+          fetch(SCRIPT_ENDPOINT, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify(payload)
+          })
+          .then(function(){
+            alert('문의가 정상적으로 전송되었습니다.\n담당자가 확인 후 연락드리겠습니다.');
+            form.reset();
+          })
+          .catch(function(err){
+            console.error('[NAVI TOUR] contact submit failed:', err);
+            alert('문의 전송 중 오류가 발생했습니다.\n잠시 후 다시 시도하시거나, 카카오/네이버/전화 상담 채널을 이용해 주세요.');
+          })
+          .finally(function(){
+            if (submitBtn){
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText || '문의 보내기';
+            }
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

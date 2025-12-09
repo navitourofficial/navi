@@ -1,0 +1,486 @@
+<!-- PATH: /Main/Main_Review.html :: FULL FILE -->
+
+<!-- ===============================================================
+  NAVI TOUR – Main_Review (함께 걸어온 발자국 섹션)
+
+  [전체 목차]
+
+  1. HTML 구조
+     1-1. 섹션 루트(.nt-section.nt-footsteps, aria-labelledby)
+     1-2. 헤더 영역(.nt-footsteps-head)
+     1-3. 가로 캐러셀 래퍼(.nt-footsteps-carousel)
+          - 좌우 내비게이션 버튼(.nt-footsteps-prev / .nt-footsteps-next)
+          - 뷰포트(.nt-footsteps-viewport)
+          - 트랙(.nt-footsteps-track) + 개별 아이템(.nt-footsteps-item)
+     1-4. 각 아이템 내부 구조
+          - 이미지 래퍼(.nt-footsteps-imgwrap + <img> + 날짜 배지)
+          - 캡션(.nt-footsteps-caption, .prod / .sep / .org)
+
+  2. CSS 스타일
+     2-1. 섹션 내부 폭/헤더 정렬(.nt-footsteps-inner, .nt-footsteps-head)
+     2-2. 캐러셀 레이아웃(.nt-footsteps-carousel, .nt-footsteps-viewport, .nt-footsteps-track)
+     2-3. 카드 3장 레이아웃(.nt-footsteps-item, .is-center 강조)
+     2-4. 이미지/날짜 캡슐(.nt-footsteps-imgwrap, .nt-footsteps-date)
+     2-5. 캡션 타이포(.nt-footsteps-caption, .prod, .sep)
+     2-6. 좌우 버튼 스타일(.nt-footsteps-nav, :hover, :focus-visible)
+     2-7. 반응형(720px 이하 버튼 크기 축소)
+
+  3. 자바스크립트
+     3-1. 캐러셀 초기화: 루트 요소/트랙/버튼 조회
+     3-2. 카드 폭 단위(STEP)와 애니메이션 플래그(isAnimating)
+     3-3. markCenter(): 항상 가운데 카드에 .is-center 부여
+     3-4. initOrder(): DOM 재배열로 첫 화면 구성([마지막, 1, 2] 느낌)
+     3-5. goNext()/goPrev(): transform으로 슬라이드 이동
+     3-6. transitionend 핸들러: DOM 재정렬 후 transform 리셋
+================================================================= -->
+
+<section class="nt-section nt-footsteps" aria-labelledby="nt-footsteps-title">
+  <div class="nt-panel">
+    <!-- 1-1. 섹션 내부 컨텐츠 폭/정렬 담당 -->
+    <div class="nt-footsteps-inner">
+      <!-- 1-2. 헤더 영역: 섹션 라벨 + 타이틀 + 리드 텍스트 -->
+      <div class="nt-footsteps-head">
+        <div class="nt-section-kicker">FIELD MOMENTS</div>
+        <h2 id="nt-footsteps-title" class="nt-section-title">함께 걸어온 발자국</h2>
+        <p class="nt-section-body">
+          나비투어와 길을 걸은 분들의 발자국은 일정표보다 표정과 한마디에 더 선명하게 남습니다.<br>
+          그 여정 중 몇 장면을, 사진과 한 줄로 기록했습니다.
+        </p>
+      </div>
+
+      <!-- 1-3. 가로 캐러셀 전체 래퍼 -->
+      <div class="nt-footsteps-carousel" aria-label="함께 걸어온 발자국 사진 모음">
+        <!-- 왼쪽(이전) 버튼 -->
+        <button class="nt-footsteps-nav nt-footsteps-prev" type="button" aria-label="이전 사진">
+          &#10094;
+        </button>
+
+        <!-- 뷰포트: 넘치는 부분은 잘라내고, 내부 트랙만 이동 -->
+        <div class="nt-footsteps-viewport">
+          <!-- 트랙: 모든 카드(.nt-footsteps-item)가 가로로 줄지어 있는 컨테이너 -->
+          <div class="nt-footsteps-track">
+            <!-- =====================
+                 1번 카드
+                 - 실제 현장 사진 + 날짜 + 코스명 + 단체명
+            ====================== -->
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/1.webp" alt="서간도의 길 현장 사진">
+                <div class="nt-footsteps-date">2006.12</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">서간도의 길 6박7일</span>
+                <span class="sep">·</span>
+                <span class="org">동북아 비전스쿨</span>
+              </figcaption>
+            </figure>
+
+            <!-- 2번 카드 -->
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/2.webp" alt="북간도의 길 현장 사진">
+                <div class="nt-footsteps-date">2024.05</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">서간도의 길 5박6일</span>
+                <span class="sep">·</span>
+                <span class="org">부산 교회 청년부</span>
+              </figcaption>
+            </figure>
+
+            <!-- 3번 카드 -->
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/3.webp" alt="도쿄 독립운동사 현장 사진">
+                <div class="nt-footsteps-date">2025.01</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">도쿄 독립운동사 3일</span>
+                <span class="sep">·</span>
+                <span class="org">중견기업 인사팀 연수</span>
+              </figcaption>
+            </figure>
+
+            <!-- 4 ~ 11번 카드: 슬롯 미리 생성
+                 - 추후 실제 코스/단체 정보로 교체 예정 -->
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/4.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/5.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/6.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/7.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/8.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/9.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/10.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/11.webp" alt="">
+                <div class="nt-footsteps-date">연도.월</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">코스 이름</span>
+                <span class="sep">·</span>
+                <span class="org">소속/단체</span>
+              </figcaption>
+            </figure>
+
+            <!-- 12번 카드: 실제 데이터(날짜/코스/단체) 채워진 예시 -->
+            <figure class="nt-footsteps-item">
+              <div class="nt-footsteps-imgwrap">
+                <img src="Image/Review/12.webp" alt="">
+                <div class="nt-footsteps-date">2017.07</div>
+              </div>
+              <figcaption class="nt-footsteps-caption">
+                <span class="prod">서간도의 길 4박5일</span>
+                <span class="sep">·</span>
+                <span class="org">미추홀랩</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <!-- 오른쪽(다음) 버튼 -->
+        <button class="nt-footsteps-nav nt-footsteps-next" type="button" aria-label="다음 사진">
+          &#10095;
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* =========================================================
+     2-1. 섹션 내부 폭/헤더 정렬
+  ========================================================= */
+  .nt-footsteps-inner{
+    max-width: 960px;         /* 발자국 섹션 전체 최대 폭 제한 */
+    margin: 0 auto;           /* 중앙 정렬 */
+  }
+
+  .nt-footsteps-head{
+    text-align: center;
+    margin-bottom: 24px;      /* 헤더와 캐러셀 사이 간격 */
+  }
+
+  /* =========================================================
+     2-2. 캐러셀 레이아웃
+     - 좌우 버튼 + 중앙 뷰포트 구조
+  ========================================================= */
+  .nt-footsteps-carousel{
+    position: relative;
+    display: flex;            /* 버튼/뷰포트 가로 배치 */
+    align-items: center;
+    gap: 10px;                /* 버튼과 뷰포트 사이 간격 */
+  }
+
+  .nt-footsteps-viewport{
+    flex: 1;                  /* 버튼을 제외한 나머지 공간 전부 사용 */
+    overflow: hidden;         /* 트랙이 넘치는 부분 숨기기 */
+  }
+
+  .nt-footsteps-track{
+    display: flex;            /* 모든 카드를 가로로 나열 */
+    justify-content: flex-start;
+    gap: 16px;                /* 카드 사이 간격 */
+    transition: transform .45s ease; /* 좌우 슬라이드 애니메이션 */
+  }
+
+  /* =========================================================
+     2-3. 카드 3장을 한 화면에 보이도록 폭 고정
+     - flex-basis = 100%/3
+     - 회색 효과 제거: opacity 항상 1
+  ========================================================= */
+  .nt-footsteps-item{
+    flex: 0 0 calc(100% / 3); /* 트랙 기준으로 정확히 3장 보이게 */
+    margin: 0;
+    opacity: 1;               /* 좌우 카드도 동일한 명도로 표시 */
+    transition: opacity .3s ease;
+  }
+
+  /* 중앙 카드에만 별도 강조를 줄 일이 생기면 여기서 확장 가능 */
+  .nt-footsteps-item.is-center{
+    opacity: 1;
+  }
+
+  /* =========================================================
+     2-4. 이미지 비율 + 날짜 배지
+     - 여백 없이 꽉 채우도록 object-fit: cover 로 변경
+       (비율이 다른 경우 가장자리 일부는 잘릴 수 있음)
+  ========================================================= */
+  .nt-footsteps-imgwrap{
+    position: relative;
+    border-radius: var(--radius, 14px);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;      /* 모든 썸네일을 4:3 비율로 맞춤 */
+    background: #171c24;      /* 이미지 여백이 생길 때 채워질 배경색 */
+  }
+
+  .nt-footsteps-item img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;        /* 여백 없이 꽉 채우기 (필요 시 일부 크롭) */
+    display: block;
+  }
+
+  /* 오른쪽 상단 날짜 캡슐 */
+  .nt-footsteps-date{
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1.4;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+  }
+
+  /* =========================================================
+     2-5. 캡션 (코스명 · 소속/단체)
+  ========================================================= */
+  .nt-footsteps-caption{
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--muted, #A7B2C5);
+    text-align: center;
+    white-space: nowrap;      /* 한 줄 유지 */
+    overflow: hidden;
+    text-overflow: ellipsis;  /* 너무 길면 … 처리 */
+  }
+
+  .nt-footsteps-caption .prod{
+    font-weight: 600;
+    color: var(--ink, #E8ECF6);  /* 코스명 조금 더 밝게 */
+  }
+
+  .nt-footsteps-caption .sep{
+    opacity: .7;
+    margin: 0 2px;
+  }
+
+  /* =========================================================
+     2-6. 좌우 네비게이션 버튼
+  ========================================================= */
+  .nt-footsteps-nav{
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #e2e4e8;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    font-size: 18px;
+  }
+
+  .nt-footsteps-nav:hover{
+    background: #d5d7db;
+  }
+
+  .nt-footsteps-nav:focus-visible{
+    outline: 2px solid var(--gold, #C9B27D);
+    outline-offset: 2px;      /* 포커스 링을 바깥으로 살짝 띄워줌 */
+  }
+
+  /* =========================================================
+     2-7. 반응형: 720px 이하에서 버튼만 살짝 축소
+  ========================================================= */
+  @media (max-width: 720px){
+    .nt-footsteps-carousel{
+      gap: 6px;
+    }
+
+    .nt-footsteps-nav{
+      width: 28px;
+      height: 28px;
+      font-size: 16px;
+    }
+  }
+</style>
+
+<script>
+  /* =========================================================
+     3. 함께 걸어온 발자국 – 3장 슬라이드 캐러셀 로직
+
+     - 구조 요약:
+       .nt-footsteps-carousel
+         .nt-footsteps-prev / .nt-footsteps-next
+         .nt-footsteps-viewport
+           .nt-footsteps-track
+             .nt-footsteps-item * n
+
+     - 동작 방식:
+       · 한 화면에 3장씩 보이고, 가운데 카드에 .is-center 클래스를 부여
+         (지금은 opacity 차이 없이 동일하게 보이지만, 향후 확장 여지를 위해 유지)
+       · 버튼 클릭 시 트랙을 좌/우로 100%/3 만큼 이동(transform)
+       · transition 끝난 후 실제 DOM 순서를 바꿔 치기해서
+         눈에 보이는 위치는 그대로인데 "무한 루프"처럼 동작
+  ========================================================= */
+  (function(){
+    // 3-1. 캐러셀 루트/트랙/버튼 DOM 캐시
+    const root  = document.querySelector('.nt-footsteps-carousel');
+    if (!root) return; // 섹션이 없으면 조용히 종료
+
+    const track = root.querySelector('.nt-footsteps-track');
+    const prev  = root.querySelector('.nt-footsteps-prev');
+    const next  = root.querySelector('.nt-footsteps-next');
+    if (!track || !prev || !next) return;
+
+    // 3-2. 한 카드 폭(% 단위) + 애니메이션 상태 관리
+    const STEP = 100 / 3;   // 카드 한 장이 차지하는 비율(33.333...)
+    let isAnimating = false; // 전환 중 중복 클릭 방지 플래그
+    let dir = null;          // 마지막 이동 방향('next' 또는 'prev')
+
+    // 3-3. 가운데 카드에만 is-center 클래스를 넣어 강조
+    function markCenter(){
+      const cards = Array.from(track.children);
+      cards.forEach((el, idx) => {
+        // 항상 트랙 상에서 두 번째 요소(인덱스 1)를 "중앙 카드"로 취급
+        el.classList.toggle('is-center', idx === 1);
+      });
+    }
+
+    // 3-4. 초기 DOM 재배열
+    //      - 마지막 카드를 맨 앞으로 보내서 [마지막, 1, 2, 3, ...] 형태로 시작
+    //      - 이렇게 해두면 transform(0) 상태에서 이미 "앞뒤"가 준비된 무한 루프 느낌
+    (function initOrder(){
+      const cards = track.children;
+      if (cards.length > 1) {
+        const last = cards[cards.length - 1];
+        track.insertBefore(last, cards[0]);
+      }
+      markCenter();
+    })();
+
+    // 3-5. 다음 카드로 이동
+    function goNext(){
+      if (isAnimating) return;                 // 이미 이동 중이면 무시
+      isAnimating = true;
+      dir = 'next';
+      track.style.transition = 'transform .45s ease';
+      track.style.transform = 'translateX(-' + STEP + '%)'; // 왼쪽으로 한 카드 폭만큼 이동
+    }
+
+    // 3-6. 이전 카드로 이동
+    function goPrev(){
+      if (isAnimating) return;
+      isAnimating = true;
+      dir = 'prev';
+      track.style.transition = 'transform .45s ease';
+      track.style.transform = 'translateX(' + STEP + '%)';  // 오른쪽으로 한 카드 폭만큼 이동
+    }
+
+    // 버튼 이벤트 바인딩
+    prev.addEventListener('click', goPrev);
+    next.addEventListener('click', goNext);
+
+    // 3-7. 애니메이션 종료 후 DOM 재배열 + 상태 리셋
+    track.addEventListener('transitionend', function(e){
+      // transform 애니메이션이 끝난 경우만 처리
+      if (e.target !== track || e.propertyName !== 'transform') return;
+
+      // 애니메이션 일단 끄고 DOM 재배열
+      track.style.transition = 'none';
+
+      if (dir === 'next') {
+        // 맨 앞 카드를 맨 뒤로 보내기
+        track.appendChild(track.firstElementChild);
+      } else if (dir === 'prev') {
+        // 맨 뒤 카드를 맨 앞으로 끌어오기
+        const last = track.lastElementChild;
+        track.insertBefore(last, track.firstElementChild);
+      }
+
+      // 시각적으로는 원래 위치(0)로 되돌림
+      track.style.transform = 'translateX(0)';
+      // 가운데 카드 다시 마킹
+      markCenter();
+
+      // 상태 리셋
+      isAnimating = false;
+      dir = null;
+    });
+  })();
+</script>

@@ -1,0 +1,252 @@
+<!-- PATH: /Main/Main_Guide.html :: FULL REPLACE -->
+<style>
+  /* =========================================================
+     NAVI TOUR – 해설자 소개 섹션 전용 스타일 (Main_Guide.html)
+
+     [목차 / CSS 구조]
+     1. 공통 래퍼(.nt-guide-inner)
+     2. 상단 프로필 영역 레이아웃(.nt-guide-top, .nt-guide-photo, 타이포)
+     3. Q&A 카드 그리드(.nt-guide-qa-wrap, .nt-guide-qa-item)
+     4. 하단 시그니처 박스(.nt-guide-signature)
+     5. 반응형 대응(@media 820px / 640px)
+  ========================================================= */
+
+  /* ---------------------------------
+     1. 공통 래퍼: 패널 안 실제 콘텐츠 폭/패딩 제어
+  ---------------------------------- */
+  .nt-guide-inner{
+    max-width:1040px;          /* 내용이 너무 넓어지지 않도록 최대 폭 제한 */
+    margin:0 auto;             /* 가운데 정렬 */
+    padding:20px 34px 20px;    /* 위/좌우/아래 여백 */
+  }
+
+  /* ---------------------------------
+     2. 상단: 사진 + 소개 텍스트 레이아웃
+  ---------------------------------- */
+
+  .nt-guide-top{
+    display:grid;                         /* 사진/텍스트 2열 배치 */
+    grid-template-columns:260px minmax(0,1fr);  /* 왼쪽 고정폭(사진), 오른쪽 유동폭(텍스트) */
+    gap:32px;                             /* 두 컬럼 사이 간격 (텍스트와 안 겹치게 조금 더 넓힘) */
+    align-items:center;                   /* 세로 방향 중앙 정렬 */
+    margin-bottom:24px;                   /* 아래쪽과 Q&A 영역 사이 간격 */
+  }
+
+  .nt-guide-photo{
+    width:100%;                           /* 부모(grid 셀) 폭에 맞춤 */
+    max-width:260px;                      /* 너무 커지지 않도록 최대 폭 */
+    aspect-ratio:1 / 1;                   /* 1:1 정사각형 비율 유지 */
+    border-radius:24px;                   /* 사진 모서리 둥글게 */
+    overflow:hidden;                      /* 둥근 테두리 밖 이미지 잘라내기 */
+    border:3px solid rgba(201,168,106,.7);/* 골드 톤 테두리 */
+    box-shadow:0 18px 40px rgba(0,0,0,.16);/* 살짝 떠 있는 효과 */
+    margin:0;                             /* 기본 figure 좌우 40px 마진 제거 → Q&A 카드와 같은 줄 시작 */
+  }
+  .nt-guide-photo img{
+    width:100%;                           /* 컨테이너 채우기 */
+    height:100%;                          /* 세로도 꽉 채움 */
+    object-fit:cover;                     /* 사진 비율 유지 + 잘라내기 */
+    display:block;                        /* 인라인 간격 제거 */
+  }
+
+  .nt-guide-eyebrow{
+    font:500 11px/1.4 "Noto Sans KR",sans-serif; /* 작은 대문자 느낌의 상단 라벨 */
+    letter-spacing:.16em;                 /* 자간 넓혀서 브랜드 느낌 강화 */
+    text-transform:uppercase;             /* 영문 대문자 */
+    color:var(--muted);                   /* 옅은 회색 톤 */
+    margin-bottom:6px;                    /* 아래 타이틀과 간격 */
+  }
+  .nt-guide-title{
+    margin:0 0 4px;                       /* 위는 붙이고, 아래만 살짝 띄움 */
+    font:800 30px/1.3 "Playfair Display","Noto Sans KR",serif; /* 영어+한글 혼합 타이틀 */
+  }
+  .nt-guide-subtitle{
+    margin:0 0 14px;                      /* 본문과 간격 */
+    font-size:14px;
+    color:var(--gold);                    /* 골드 색상으로 역할/직함 강조 */
+    font-weight:600;
+  }
+  .nt-guide-body{
+    margin:0;                             /* 불필요 기본 마진 제거 */
+    font-size:14px;
+    color:#374151;                        /* 본문 읽기 좋은 진한 회색 */
+  }
+
+  /* ---------------------------------
+     3. Q&A 카드 영역
+     - 해설자에 대한 3개 질문/답변 카드
+  ---------------------------------- */
+  .nt-guide-qa-wrap{
+    margin-top:8px;                       /* 상단 프로필과 살짝 간격 */
+    border-top:1px solid #EFE7D9;         /* 위쪽에 가는 구분선 */
+    padding-top:22px;                     /* 선과 카드 사이 패딩 */
+    display:grid;                         /* 카드들을 그리드로 배치 */
+    grid-template-columns:repeat(3,minmax(0,1fr)); /* 데스크탑에서 3열 */
+    gap:16px 20px;                        /* 세로/가로 간격 */
+  }
+  .nt-guide-qa-item{
+    background:#FBF7EF;                   /* 살짝 아이보리 배경 */
+    border-radius:18px;                   /* 카드 모서리 둥글게 */
+    padding:12px 14px 13px;               /* 내부 여백 */
+    border:1px solid #F0E2CF;             /* 옅은 테두리로 카드 경계 표시 */
+  }
+  .nt-guide-q{
+    font-size:12px;
+    font-weight:600;
+    color:var(--gold);                    /* 질문 라벨은 골드 톤 */
+    margin:0 0 4px;
+  }
+  .nt-guide-q span{
+    font-size:11px;                       /* Q1, Q2 숫자는 살짝 더 작게 */
+    opacity:.85;
+    margin-right:4px;                     /* 숫자와 질문 본문 사이 간격 */
+  }
+  .nt-guide-a{
+    margin:0;
+    font-size:13px;
+    color:#374151;                        /* 답변용 본문 색 */
+  }
+
+  /* ---------------------------------
+     4. 하단 시그니처 박스
+     - 해설자의 한 줄 문장 + 이름 강조
+  ---------------------------------- */
+  .nt-guide-signature{
+    margin-top:26px;                      /* Q&A 카드와 간격 */
+    border-radius:20px;                   /* 박스 둥근 모서리 */
+    padding:14px 16px 12px;               /* 박스 내부 여백 */
+    background:#111827;                   /* 어두운 네이비/블랙 배경 */
+    color:#F9FAFB;                        /* 텍스트는 거의 흰색 */
+    position:relative;
+    overflow:hidden;                      /* 배경 그라디언트가 삐져나가지 않게 */
+  }
+  .nt-guide-signature::before{
+    content:"";                           /* 장식용 레이어 */
+    position:absolute;
+    inset:-40%;                           /* 박스를 크게 덮는 영역 */
+    background:
+      radial-gradient(circle at 10% 0%,rgba(255,255,255,.08) 0,transparent 55%),
+      radial-gradient(circle at 90% 120%,rgba(201,168,106,.25) 0,transparent 60%);
+    opacity:.9;
+    pointer-events:none;                  /* 클릭 등 인터랙션 막지 않도록 */
+  }
+  .nt-guide-signature-inner{
+    position:relative;
+    z-index:1;                            /* 배경 그라디언트보다 위에 텍스트 표시 */
+  }
+  .nt-guide-sign-text{
+    margin:0 0 6px;
+    font-size:13px;                       /* 한 줄 인용문 크기 */
+  }
+  .nt-guide-sign-name{
+    margin:0;
+    font-size:12px;
+    color:#D1D5DB;                        /* 서명은 살짝 옅게 */
+  }
+  .nt-guide-sign-name strong{
+    color:#F9FAFB;                        /* 이름 부분만 흰색에 가깝게 강조 */
+    font-weight:600;
+  }
+
+  /* ---------------------------------
+     5. 반응형 대응
+     - 태블릿(820px 이하), 모바일(640px 이하)
+  ---------------------------------- */
+
+  @media(max-width:820px){
+    .nt-guide-top{
+      grid-template-columns:1fr;          /* 사진/텍스트 한 줄 세로 스택 */
+    }
+    .nt-guide-photo{
+      max-width:220px;                    /* 좁은 화면에서는 사진 약간 축소 */
+      margin:0 auto;                      /* 사진 중앙 정렬 */
+    }
+    .nt-guide-title{text-align:center;}   /* 타이틀 가운데 정렬 */
+    .nt-guide-subtitle{text-align:center;}/* 부제목도 가운데 정렬 */
+    .nt-guide-qa-wrap{
+      grid-template-columns:1fr 1fr;      /* Q&A 카드 2열로 변경 */
+    }
+  }
+
+  @media(max-width:640px){
+    .nt-guide-inner{
+      padding:26px 18px 22px;             /* 모바일에서 좌우 패딩 축소 */
+    }
+    .nt-guide-title{
+      font-size:24px;                     /* 타이틀 크기 줄이기 */
+    }
+    .nt-guide-qa-wrap{
+      grid-template-columns:1fr;          /* Q&A 카드 1열로 쌓기 */
+    }
+  }
+</style>
+
+<section class="nt-section nt-guide" aria-label="나비투어 해설자 소개">
+  <div class="nt-panel">
+    <div class="nt-guide-inner">
+      <!-- 1) 상단: 프로필 사진 + 소개 텍스트 -->
+      <div class="nt-guide-top">
+        <!-- 프로필 사진 영역: 1:1 비율 카드 안에 대표 사진 -->
+        <figure class="nt-guide-photo">
+          <!-- 실제 이미지는 프로젝트 구조에 맞게 경로만 변경해서 사용 -->
+          <img src="Image/Guide/guide_main.png" alt="나비투어 대표 해설자 프로필">
+        </figure>
+
+        <!-- 텍스트 블록: 라벨 / 이름 / 역할 / 소개문 -->
+        <div>
+          <div class="nt-guide-eyebrow">LEAD GUIDE &amp; CURATOR</div>
+          <h2 class="nt-guide-title">이 길을 함께 걷는 해설자, 최정학</h2>
+          <p class="nt-guide-subtitle">역사·독립운동 인문기행 해설자 / 프로그램 기획자</p>
+          <p class="nt-guide-body">
+            교과서의 문장과 연표로만 남아 있던 이름들을, 실제 공간과 삶의 결로 다시 만나도록 돕는 일을 하고 있습니다.
+            한 번의 여행이 끝나더라도, 참가자들의 교실·강단·가정·회의실에서 이야기가 계속 이어지도록 코스를 설계합니다.
+            그래서 나비투어의 여정은 ‘한 번 다녀오는 여행’이 아니라, 삶의 언어와 비전을 다시 세우는 과정이어야 한다고 믿습니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 2) Q&A 3개 블록 -->
+      <section class="nt-guide-qa-wrap" aria-label="해설자에 대해 자주 묻는 질문">
+        <article class="nt-guide-qa-item">
+          <p class="nt-guide-q">
+            <span>Q1.</span>왜 ‘역사의 길’을 안내하는 일을 시작하셨나요?
+          </p>
+          <p class="nt-guide-a">
+            대학과 현장에서 독립운동사를 연구하며, 자료와 책만으로는 닿지 않는 지점이 있다는 것을 느꼈습니다.
+            그 현장에 서본 사람의 눈빛과 언어가 다르다는 것을 보았고, 그 경험을 더 많은 이들과 나누고 싶었습니다.
+          </p>
+        </article>
+
+        <article class="nt-guide-qa-item">
+          <p class="nt-guide-q">
+            <span>Q2.</span>여행을 설계할 때 가장 먼저 고민하는 것은 무엇인가요?
+          </p>
+          <p class="nt-guide-a">
+            “이 여정을 마치고 돌아간 후, 어떤 이야기를 누구에게 전하게 될까?”를 먼저 떠올립니다.
+            학교·교회·가정·공동체에서 그대로 옮겨갈 수 있는 언어와 장면을 만드는 것이 목표입니다.
+          </p>
+        </article>
+
+        <article class="nt-guide-qa-item">
+          <p class="nt-guide-q">
+            <span>Q3.</span>참가자들이 무엇을 가져가길 바라시나요?
+          </p>
+          <p class="nt-guide-a">
+            과거를 동경하는 마음이 아니라, 오늘의 자리에서 다시 선택할 용기를 얻어가길 바랍니다.
+            “나라의 일”이 곧 “내 삶의 일”이 될 수 있다는 감각, 그리고 다음 세대에게 무엇을 남길지에 대한 질문이면 충분합니다.
+          </p>
+        </article>
+      </section>
+
+      <!-- 3) 시그니처 한 줄 -->
+      <section class="nt-guide-signature">
+        <div class="nt-guide-signature-inner">
+          <p class="nt-guide-sign-text">
+            “우리가 이 길을 다시 걷는 이유는, 과거를 복습하기 위해서가 아니라 오늘을 다시 선택하기 위해서입니다.”
+          </p>
+          <p class="nt-guide-sign-name">– <strong>최정학</strong>, 나비투어 리드 가이드</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

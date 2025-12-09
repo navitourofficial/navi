@@ -1,0 +1,457 @@
+/* PATH: /Main/Main_Card.css :: FULL FILE */
+/* ======================================================================
+   NAVI TOUR – 메인 상품 카드 레이아웃
+
+   - 한 줄 최대 3개 카드
+   - "레이아웃 + 비주얼"만 담당, 실제 데이터는 JS(MainCards.js 등)에서 주입
+   - 메인 상품 리스트 영역 전용 스타일
+
+   [전체 목차]
+
+   1. 전역 토큰 & 기본 리셋
+      1-1. 전역 색상/브랜드 토큰(:root)
+      1-2. box-sizing 리셋(*)
+      1-3. body 기본 배경/폰트 설정
+
+   2. 카드 페이지 래퍼(.card-page)
+
+   3. 리스트 그리드 레이아웃(.grid3)
+      3-1. 기본 1열(모바일)
+      3-2. 640px 이상 2열
+      3-3. 1024px 이상 3열
+
+   4. 카드 공통 구조(.card)
+      4-1. 기본 박스 스타일
+      4-2. hover 시 들림 효과
+
+   5. 카드 썸네일(.card .thumb, img)
+
+   6. 카드 본문(.card .body, h3, p)
+
+   7. 태그 영역(.tags, .tag, 아이콘)
+
+   8. 하단 액션 줄(.actions, .actions-term, .actions-buttons, 버튼)
+
+   9. 일반 카드용 보더 그라디언트 & 이미지 샤인
+      9-1. 기본 카드 보더 그라디언트
+      9-2. hover 시 그라디언트 변경
+      9-3. 썸네일 하이라이트(빛 스윕)
+
+   10. 대표상품 카드(data-region="featured")
+       10-1. 대표 카드 보더(conic-gradient)
+       10-2. hover 시 그림자/리프트 강화
+
+   11. 모션 최소화 대응(prefers-reduced-motion)
+
+   12. 대형 화면(1280px 이상) 튜닝
+       12-1. gap/라운딩 축소
+       12-2. 타이포/패딩 컴팩트화
+====================================================================== */
+
+
+/* ======================================================================
+   1. 전역 토큰 & 기본 리셋
+====================================================================== */
+
+/* 1-1. 전역 색상/브랜드 토큰
+   - 메인 카드 페이지에서 쓸 컬러 프리셋
+   - 이미 상위에서 정의되어 있으면 그 값이 우선됨
+*/
+:root{
+  --bg:#0b0f14;        /* 페이지 배경(짙은 네이비/블랙) */
+  --panel:#121820;     /* 패널/섹션 배경 */
+  --ink:#E8ECF6;       /* 기본 텍스트 색 */
+  --muted:#6B7280;     /* 보조 텍스트(연한 회색) */
+  --line:#E1E7EF;      /* 카드 보더/구분선 색 */
+  --brand:#13468a;     /* 브랜드 메인 컬러(버튼 등) */
+  --brand-d:#0b1e4f;   /* 브랜드 딥 톤(보더 등) */
+}
+
+/* 1-2. box-sizing 리셋
+   - 패딩/보더가 width 안에 포함되도록 통일
+*/
+*{
+  box-sizing:border-box;
+}
+
+/* 1-3. body 기본 스타일
+   - 이 CSS를 단독으로 테스트할 때도 보기 좋게 하려고 설정한 값
+   - 실제 프로젝트에서는 전역 body 스타일이 덮어쓸 수 있음
+*/
+body{
+  margin:0;            /* 기본 마진 제거 */
+  background:var(--bg);
+  color:var(--ink);
+  font:14px/1.6 "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+
+/* ======================================================================
+   2. 카드 페이지 래퍼(.card-page)
+   - 메인 카드 섹션의 전체 폭/여백 제어
+====================================================================== */
+
+.card-page{
+  max-width:1180px;     /* 전체 컨테이너 최대 폭 */
+  margin:40px auto 60px;/* 위/아래 여백 + 가운데 정렬 */
+  padding:0 16px 40px;  /* 좌우 패딩 + 하단 여유 공간 */
+}
+
+
+/* ======================================================================
+   3. 리스트 그리드 레이아웃(.grid3)
+   - 1 → 2 → 3 컬럼 반응형
+====================================================================== */
+
+/* 3-1. 기본(모바일): 1열 레이아웃 */
+.grid3{
+  display:grid;
+  gap:18px;             /* 카드 간격 */
+  margin-top:28px;      /* 카드 리스트와 상단 헤더 사이 간격 */
+  grid-template-columns:1fr;  /* 한 줄에 1개 */
+}
+
+/* 3-2. 태블릿(가로 640px 이상): 2열 */
+@media (min-width:640px){
+  .grid3{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 3-3. 데스크탑(1024px 이상): 3열 */
+@media (min-width:1024px){
+  .grid3{
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* ======================================================================
+   4. 카드 공통 구조(.card)
+   - 박스 스타일 + hover 모션
+====================================================================== */
+
+.card{
+  /* 기본 박스 비주얼 */
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;                    /* 라운드 밖으로 나가는 요소 숨김 */
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+
+  /* 카드 전체를 세로 플렉스로 구성
+     - 위: 이미지/본문
+     - 아래: actions 줄(버튼/기간)
+  */
+  display:flex;
+  flex-direction:column;
+
+  /* hover 시 부드러운 애니메이션 대상 속성들 */
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease,
+    background .25s ease;
+}
+
+/* hover 시 살짝 떠오르는 효과 */
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 26px rgba(0,0,0,.12);
+}
+
+
+/* ======================================================================
+   5. 카드 썸네일 영역(.thumb, img)
+====================================================================== */
+
+/* 이미지 래퍼: 상대 위치 + 넘침 숨김(샤인 효과용) */
+.card .thumb{
+  position:relative;
+  overflow:hidden;
+}
+
+/* 실제 썸네일 이미지 */
+.card .thumb img{
+  width:100%;             /* 카드 폭 가득 채우기 */
+  aspect-ratio:16/10;     /* 16:10 비율로 강제 */
+  object-fit:cover;       /* 비율 유지하면서 잘라내기 */
+  display:block;          /* inline-img의 공백 제거 */
+}
+
+
+/* ======================================================================
+   6. 카드 본문(.body, h3, p)
+====================================================================== */
+
+.card .body{
+  padding:14px;           /* 내부 여백 */
+  color:#111827;          /* 본문 텍스트 색(진한 회색) */
+
+  /* flex로 구성해서
+     - 본문 내용이 위쪽에 쌓이고
+     - .actions가 맨 아래에 붙도록 설정
+  */
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;          /* 카드 높이 맞추기 */
+}
+
+/* 코스명/상품명 타이틀 */
+.card .body h3{
+  margin:0 0 4px;
+  font-size:1.05rem;
+}
+
+/* 요약 설명 */
+.card .body p{
+  margin:4px 0 6px;
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+
+/* ======================================================================
+   7. 태그 영역(.tags, .tag, .tag i)
+   - "대표 / 추천 / 출발확정" 같은 뱃지용
+====================================================================== */
+
+/* 태그 묶음 컨테이너 */
+.card .tags{
+  display:flex;
+  flex-wrap:wrap;       /* 태그가 넘치면 줄바꿈 */
+  gap:6px;              /* 태그 사이 간격 */
+  margin:6px 0 8px;
+}
+
+/* 개별 태그 pill */
+.card .tag{
+  border:1px solid #d9e0e732;
+  border-radius:5px;  /* 완전 동그란 pill 형태 */
+  padding:0px 0px;
+  font-size:.55rem;
+  color:#22303f;
+  background:#fafbfd;
+}
+
+/* 태그 안 아이콘(Font Awesome 등) */
+.card .tag i{
+  margin-right:4px;
+  color:#1f74b5b5;        /* 아이콘만 살짝 브랜드 블루 느낌 */
+}
+
+
+/* ======================================================================
+   8. 하단 액션 줄(.actions)
+   - 기간/가격/테마 + 버튼 묶음
+   - 카드 높이가 달라도 항상 맨 아래에 고정
+====================================================================== */
+
+.card .actions{
+  margin-top:auto;       /* 위 내용 길이와 상관 없이 아래로 밀어 붙이기 */
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* 왼쪽: "미국 · 하와이 · 5박6일" 이런 텍스트 */
+.card .actions-term{
+  font-size:.78rem;
+  color:#6b7280;
+  white-space:nowrap;    /* 한 줄 유지 */
+}
+
+/* 오른쪽: 버튼 묶음 (자세히 보기 / 일정표 등) */
+.card .actions-buttons{
+  margin-left:auto;      /* 왼쪽 텍스트와 최대한 떨어져 우측 정렬 */
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* 버튼 공통 스타일 */
+.card .actions-buttons a{
+  padding:8px 12px;
+  border-radius:10px;
+  text-decoration:none;
+  font-size:.85rem;
+  white-space:nowrap;    /* 버튼 안 텍스트 줄바꿈 방지 */
+}
+
+/* 서브/보조 버튼(테두리형) */
+.card .btn-ghost{
+  border:1px solid #d9e0e7;
+  background:#fff;
+  color:#1c2b38;
+}
+
+/* 메인 CTA 버튼(브랜드 컬러) */
+.card .btn-main{
+  border:1px solid var(--brand-d);
+  background:var(--brand);
+  color:#fff;
+}
+
+/* 가격 텍스트 전용 스타일은
+   이 카드 레이아웃에서는 사용하지 않아서 삭제한 상태
+   (다시 쓸 일 있으면 새로 정의 가능)
+*/
+
+
+/* ======================================================================
+   9. 일반 카드 보더 그라디언트 & 썸네일 샤인
+   - 대표상품이 아닌 카드들만 대상
+====================================================================== */
+
+/* 9-1. 일반 카드 보더를 그라디언트로 래핑
+   - padding-box: 안쪽은 흰색
+   - border-box: 바깥 보더는 파란 계열 그라디언트
+*/
+.card:not([data-region="featured"]){
+  position: relative;
+  border:1px solid transparent;        /* 실제 보더는 그라디언트가 담당 */
+  border-radius:14px;
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(135deg, #eef3ff, #f6f9ff) border-box;
+}
+
+/* 9-2. hover 시 보더 그라디언트 살짝 진하게 */
+.card:not([data-region="featured"]):hover{
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(135deg, #e3eaff, #f1f6ff) border-box;
+}
+
+/* 9-3. 이미지 샤인(빛 스윕) 효과
+   - ::after로 하이라이트 그라디언트 레이어를 올려놓고
+     hover 시 왼쪽 → 오른쪽으로 흘러가게 처리
+*/
+.card .thumb::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;  /* 마우스 이벤트 방해 안 하게 */
+  background:linear-gradient(
+    110deg,
+    transparent 0 40%,
+    rgba(255,255,255,.28) 50%,
+    transparent 60% 100%
+  );
+  transform:translateX(-120%);      /* 처음에는 왼쪽 바깥에 숨겨두기 */
+  transition:transform .8s ease;
+}
+
+/* hover 시 빛이 오른쪽으로 흘러가는 느낌 */
+.card:hover .thumb::after{
+  transform:translateX(120%);
+}
+
+
+/* ======================================================================
+   10. 대표상품 카드(data-region="featured")
+   - conic-gradient 보더 + 더 강한 그림자
+====================================================================== */
+
+.card[data-region="featured"]{
+  position:relative;
+  overflow:hidden;
+  border:1px solid transparent;
+  border-radius:18px;        /* 일반 카드보다 살짝 더 둥글게 */
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    conic-gradient(
+      from 180deg at 50% 50%,
+      #3b82f6,   /* 블루 */
+      #22c55e,   /* 그린 */
+      #f59e0b,   /* 옐로/오렌지 */
+      #a855f7,   /* 퍼플 */
+      #3b82f6    /* 다시 블루 */
+    ) border-box;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.12),
+    0  2px  6px rgba(0,0,0,.06);
+}
+
+/* 대표상품 썸네일의 샤인 효과는 조금 더 강하게 */
+.card[data-region="featured"] .thumb::after{
+  background:linear-gradient(
+    110deg,
+    transparent 0 40%,
+    rgba(255,255,255,.35) 50%,
+    transparent 60% 100%
+  );
+  transition:transform .85s ease;
+}
+
+/* 대표상품 카드 hover 시 더 많이 떠오르게 */
+.card[data-region="featured"]:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 48px rgba(0,0,0,.18);
+}
+
+/* 필요하다면 리본/뱃지 같은 대표상품 전용 장식은
+   여기 아래에 추가로 정의해도 됨
+*/
+
+
+/* ======================================================================
+   11. 모션 최소화 대응(prefers-reduced-motion)
+   - 사용자가 OS에서 "애니메이션 줄이기" 설정했을 경우
+====================================================================== */
+
+@media (prefers-reduced-motion: reduce){
+  .card,
+  .card .thumb::after{
+    transition:none !important;      /* 모든 전환 끄기 */
+  }
+
+  .card:hover{
+    transform:none !important;       /* 카드 떠오르는 효과 제거 */
+  }
+}
+
+
+/* ======================================================================
+   12. 대형 화면(>= 1280px)에서 살짝 컴팩트하게
+   - 데스크탑 대형 해상도에서 과하게 커보이지 않게 미세 튜닝
+====================================================================== */
+
+@media (min-width:1280px){
+  .grid3{
+    gap:16px;                        /* 카드 간 간격 살짝 줄이기 */
+  }
+
+  .card{
+    border-radius:12px;              /* 라운드 조금 덜 둥글게 */
+  }
+
+  .card .body{
+    padding:10px;                    /* 본문 패딩 축소 */
+  }
+
+  .card .body h3{
+    font-size:0.85rem;
+    line-height:1.35;
+    letter-spacing:-0.2px;           /* 타이틀 폰트 */
+  }
+
+  .card .body p{
+    font-size:.68rem;
+  }
+
+  .card .tag{
+    padding:4px 7px;
+    font-size:.65rem;
+  }
+
+  .card .actions-term{
+    font-size:.72rem;
+  }
+
+  .card .actions-buttons a{
+    padding:7px 10px;
+    font-size:.74rem;
+    border-radius:8px;
+  }
+}
