@@ -254,6 +254,7 @@
       }
     }
 
+    /* ★ 모바일: 사진 비율/노출 수정 (PC 구간은 그대로) */
     @media (max-width:640px){
       .product-item{
         grid-template-columns:1fr;
@@ -263,12 +264,25 @@
           "side";
         row-gap:14px;
       }
+
       .prod-side{
         align-items:flex-start;
         text-align:left;
       }
+
+      /* 썸네일 박스는 가로 100%, 세로는 이미지 비율대로 */
       .prod-thumb{
-        max-width:320px;
+        width:100%;
+        max-width:100%;
+        aspect-ratio:auto;   /* 정사각형 강제 해제 */
+        margin:0 auto;
+      }
+
+      .prod-thumb img{
+        width:100%;
+        height:auto;         /* 세로를 원본 비율대로 */
+        object-fit:cover;    /* 필요하면 살짝 크롭 */
+        display:block;
       }
     }
   </style>
