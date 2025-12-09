@@ -82,6 +82,11 @@
             chips.forEach(c => c.classList.remove('is-active'));
             chip.classList.add('is-active');
             if (window.setCategory) window.setCategory(key);
+
+            // 칩 변경 후 새로 생긴 ABOUT/프롤로그 슬롯 다시 체크
+            if (typeof window.navitourCheckSlots === 'function') {
+              window.navitourCheckSlots();
+            }
           });
         });
 
@@ -96,23 +101,36 @@
         }
       }
 
-      /* ===== ABOUT 내부 슬롯 로더 (리뷰 / 문의섹션) ===== */
+      /* ===== ABOUT 내부 슬롯 로더 (프롤로그 / 리뷰 / 문의섹션) ===== */
 
       // 슬롯 ID → 가져올 HTML 경로
+      // 슬롯 ID → 가져올 HTML 경로
       const SLOT_MAP = {
-        'nt-review-slot':  'Main/Main_Review.html',
-        'nt-receipt-slot': 'Main/Main_Receipt.html'
+        'nt-mission-slot': 'Main/Main_Mission.html',
+        'nt-guide-slot':   'Main/Main_Guide.html',
+        'nt-foreword-slot': 'Main/Main_Foreword.html',
+        'nt-review-slot':   'Main/Main_Review.html',
+        'nt-receipt-slot':  'Main/Main_Receipt.html'
       };
+
 
       // 실제 로딩 함수: slot.innerHTML 채우고, 안의 script 다시 실행
       function loadSlotInto(slot, url){
-        if (!slot || slot.dataset.loaded === '1') return;
-        slot.dataset.loaded = '1';
+        if (!slot) return;
+
+        // 이미 로딩 중이면 패스
+        if (slot.getAttribute('data-loading') === '1') return;
+
+        // 내용이 이미 있으면 다시 안 불러옴
+        if (slot.innerHTML && slot.innerHTML.trim() !== '') return;
+
+        slot.setAttribute('data-loading', '1');
 
         fetch(url, { cache:'no-store' })
           .then(r => r.text())
           .then(html => {
             slot.innerHTML = html;
+            slot.removeAttribute('data-loading');
 
             // 삽입된 HTML 안의 <script> 실행
             const scripts = slot.querySelectorAll('script');
@@ -127,6 +145,7 @@
             });
           })
           .catch(err => {
+            slot.removeAttribute('data-loading');
             console.error('[NAVI TOUR] slot load failed:', url, err);
           });
       }
@@ -135,11 +154,14 @@
       function checkSlots(){
         Object.keys(SLOT_MAP).forEach(id => {
           const slot = document.getElementById(id);
-          if (slot && slot.dataset.loaded !== '1') {
+          if (slot) {
             loadSlotInto(slot, SLOT_MAP[id]);
           }
         });
       }
+
+      // 다른 스크립트에서도 강제로 호출할 수 있게 공개
+      window.navitourCheckSlots = checkSlots;
 
       let slotObserverStarted = false;
       function startSlotObserver(){
